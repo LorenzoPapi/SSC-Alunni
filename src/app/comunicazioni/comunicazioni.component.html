@@ -29,17 +29,20 @@
     <mat-tab label="Sondaggi">
         
         <span class="example-list-section">
-            <ul>
-              @for (sondaggio of sondaggi; track sondaggio) {
-                <li>
-                    @for (answer of sondaggio.aswers; track answer) {
-                        <mat-checkbox [checked]="answer.selected">
+            @for (sondaggio of sondaggi; track sondaggio) {
+                <p class="sondaggio-header">
+                    {{sondaggio.question}}
+                </p>
+                <ul style="display: flex; flex-direction: column;">
+                @for (answer of sondaggio.aswers; track answer) {
+                    <li>
+                        <mat-checkbox [(ngModel)]="answer.selected">
                             {{answer.text}}
                         </mat-checkbox>
-                    }
-                </li>
-              }
-            </ul>
+                    </li>
+                }
+                </ul>
+            }
           </span>
 
     </mat-tab>
