@@ -1,0 +1,47 @@
+<div class="vertical-spacer" style="height: 15px;"> </div>
+
+
+<mat-tab-group mat-stretch-tabs="true" mat-align-tabs="center">
+    <mat-tab label="Comunicazioni">
+
+        <div class="accordion-container">
+
+            <mat-accordion>
+                @for (comunicazione of comunicazioni; track comunicazione){
+                    <mat-expansion-panel 
+                        [ngClass]="$index==opened_panel ? 'open' : 'closed'" 
+                        (click)="expansion_panel_click($index);">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title> 
+                            {{comunicazione.title}}
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <p> {{comunicazione.description}} </p>
+                    </mat-expansion-panel>
+                } @empty {
+                    <p class="comunicazioni-empty"> 
+                        Non ci sono comunicazioni
+                    </p>
+                }
+              </mat-accordion>
+        </div>
+    </mat-tab>
+    <mat-tab label="Sondaggi">
+        
+        <span class="example-list-section">
+            <ul>
+              @for (sondaggio of sondaggi; track sondaggio) {
+                <li>
+                    @for (answer of sondaggio.aswers; track answer) {
+                        <mat-checkbox [checked]="answer.selected">
+                            {{answer.text}}
+                        </mat-checkbox>
+                    }
+                </li>
+              }
+            </ul>
+          </span>
+
+    </mat-tab>
+    <mat-tab label="Gruppi">Content 3</mat-tab>
+</mat-tab-group>

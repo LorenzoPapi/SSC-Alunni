@@ -1,0 +1,77 @@
+
+@use '@angular/material' as mat;
+@use './styles/m3-theme';
+
+
+
+:host{
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+}
+
+.app-content{
+    flex: 1 auto;
+}
+
+
+mat-toolbar{
+    background-color: var(--primary);
+    height: 85px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0px;
+
+    div{
+        height: 100%;
+        aspect-ratio: 1;
+        button{
+            height: 100%;
+            width: 100%;
+            mat-icon{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 50px;
+            }
+        }
+    }
+}
+
+.test-button{
+  @include mat.button-color(m3-theme.$light-theme, $color-variant: secondary);
+}
+
+.app-navigator{
+    height: 65px;
+    width: 100%;
+    //background-color: map-get(m3-theme.$secondary-color, 50);;
+    background-color: var(--secondary);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    div{
+        display: flex;
+        aspect-ratio: 1;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+        
+
+        button{
+            height: 100%;
+            width: 100%;
+            mat-icon{
+                color: white;
+                font-size: 35px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+        }
+    }
+}
