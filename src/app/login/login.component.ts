@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatInputModule} from '@angular/material/input'
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,8 @@ import {MatInputModule} from '@angular/material/input'
     FormsModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+	MatButtonModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

@@ -1,9 +1,8 @@
-<div class="login-card content mat-app-background">
+<div class="">
     <div class="login-title">
         <h2>{{title}}</h2>
     </div>
     <div class="login-content">
-        <!--<div><img src="assets/image/myreceipt.png" class="logo" alt="logo"></div>-->
         <form [formGroup]=actualForm class="login">
             @for (f of list; track $index) {
             <mat-form-field class="login" appearance="fill">
@@ -13,8 +12,7 @@
             <br>
             }
 
-            <button mat-raised-button type="submit" (click)="submit()"
-                class="primaryColorBG accentColorFG">{{send}}</button>
+            <button mat-raised-button type="submit" (click)="submit()">{{send}}</button>
         </form>
     </div>
     @for (s of errorMSG.split("\n"); track $index) {
