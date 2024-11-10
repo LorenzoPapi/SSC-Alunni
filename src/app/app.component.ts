@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 
-import {MatExpansionModule, MatExpansionPanel} from '@angular/material/expansion'; 
+import {MatExpansionModule} from '@angular/material/expansion'; 
 
 @Component({
   selector: 'app-root',
