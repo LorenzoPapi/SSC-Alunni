@@ -1,0 +1,34 @@
+<div class="login-card content mat-app-background">
+    <div class="login-title">
+        <h2>{{title}}</h2>
+    </div>
+    <div class="login-content">
+        <!--<div><img src="assets/image/myreceipt.png" class="logo" alt="logo"></div>-->
+        <form [formGroup]=actualForm class="login">
+            @for (f of list; track $index) {
+            <mat-form-field class="login" appearance="fill">
+                <mat-label>{{f.charAt(0).toUpperCase() + f.slice(1)}}</mat-label>
+                <input matInput type={{f}} placeholder={{f}} autocomplete={{f}}>
+            </mat-form-field>
+            <br>
+            }
+
+            <button mat-raised-button type="submit" (click)="submit()"
+                class="primaryColorBG accentColorFG">{{send}}</button>
+        </form>
+    </div>
+    @for (s of errorMSG.split("\n"); track $index) {
+    <h6>{{s}}</h6>
+    }
+    @if (action == "register") {
+    <button mat-button (click)="action='login'">
+        Sei già registrato? Clicca per accedere!
+    </button><br>
+    }
+
+    @if (action == "login") {
+    <button mat-button (click)="action='register'">
+        Non sei registrato? Clicca qui per registrarti!
+    </button><br>
+    }
+</div>
