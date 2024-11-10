@@ -10,7 +10,7 @@ export interface Event{
   month: number
   title: string
   description: string
-  type : "Colloquia" | "Corso" | "Assemblea" 
+  type : "Colloquia" | "Corso" | "Assemblea" | "Festa"
 }
 
 @Component({
@@ -25,9 +25,6 @@ export interface Event{
 
 export class CalendarioComponent {
   selected = model<Date | null>(null);
-  my_effect = effect(()=>{
-    console.log("somthing wrong")
-  })
 
   events : Event[] = [
     {
@@ -38,11 +35,22 @@ export class CalendarioComponent {
       title: "Colloquia 'la pedagogia di picchiare i bambini'",
       description: 'In aula magna',
       type: "Colloquia"
-    }
+    },
+
+    {
+      start_time: [7, 45], 
+      end_time: [9, 0],
+      day: 10,
+      month: 10,
+      title: "Colloquia 'la pedagogia di picchiare i bambini'",
+      description: 'In aula magna',
+      type: "Assemblea"
+    },
   ]
 
-  color_map = {"Colloquia" : "red", "Corso":"blue", "Assemblea":"green"}
+  color_map = {"Colloquia" : "red", "Corso":"blue", "Assemblea":"green", "Festa":"purple"}
   next_event : Event | null = null;
+  selected_event : Event | null = null;
 
   ngOnInit(){
     var day = new Date().getDate()
@@ -75,11 +83,27 @@ export class CalendarioComponent {
       }
     }
 
-    return '';
+    return 'no-marker';
   };
 
   openPopUp(){
+    if (this.selected() == null){
+      this.selected_event == null
+    }else{
+      this.selected_event =  null
+      for (const event of this.events) {
+        if (this.selected()!.getDate() === event.day && this.selected()!.getMonth() === event.month) {
+          this.selected_event = event
+          break
+        }
+      }
+    }
     this.selected.set(null);
-    
   }
+
+  closePopUp(){
+    console.log("tua mamma un po gay")
+    this.selected_event = null
+  }
+  
 }

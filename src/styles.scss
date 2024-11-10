@@ -66,29 +66,35 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 //ste cose stanno qui perche mi scoccio a vedere come fare le cose da quando ng-deep e' deprecato
-.blue-marker{
-  .mat-calendar-body-cell-content{
-    border: 2px solid blue; 
+.blue-marker.mat-calendar-body-cell-content{
+    border: 2px solid blue !important; 
     border-color: blue !important;
-  }
 }
 
-.red-marker {
-  .mat-calendar-body-cell-content{
-    border: 2px solid red;
+.red-marker .mat-calendar-body-cell-content{
+    border: 2px solid red !important;
     border-color: red !important;
-
-  }
 }
 
-.green-marker {
-  .mat-calendar-body-cell-content{
-    border: 2px solid green;
+.green-marker .mat-calendar-body-cell-content{
+    border: 2px solid green !important;
     border-color: green !important;
+}
 
+.purple-marker .mat-calendar-body-cell-content{
+    border: 2px solid purple !important;
+    border-color: purple !important;
+}
+
+.no-marker{
+  .mat-calendar-body-cell-content{
+
+    background-color: white !important;
+    cursor:default;
   }
 }
 
 .mat-calendar-body-today{
   background-color: rgb(215, 215, 215);
+  border: none;
 }

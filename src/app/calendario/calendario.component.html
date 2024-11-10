@@ -1,5 +1,7 @@
 <div class="calendario-container">
-    <mat-calendar ngSkipHydration [dateClass]="dateClass" [(selected)]="selected" (selectedChange)="openPopUp()"></mat-calendar>
+    <mat-calendar ngSkipHydration [dateClass]="dateClass" [(selected)]="selected" (selectedChange)="openPopUp()">
+
+    </mat-calendar>
     
     @if (next_event != null){
         <div class="next-event-container">
@@ -9,6 +11,24 @@
                 <p>Dalle {{next_event.start_time[0]}}:{{next_event.start_time[1].toString().padStart(2, '0')}} 
                     alle {{next_event.end_time[0]}}:{{next_event.end_time[1].toString().padStart(2, '0')}}</p>
             </div>
+        </div>
+    }
+
+    @if (selected_event != null){
+        <div class="popup-background" (click)="closePopUp()">
+            <mat-card class="event-popup"> 
+                <mat-card-header>
+                    <mat-card-title>
+                        {{selected_event.title}}
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                    <p> {{selected_event.description}}</p>
+                    <div class="vertical-spacer" style="height: 10px;"></div>
+                    <p>Dalle {{selected_event.start_time[0]}}:{{selected_event.start_time[1].toString().padStart(2, '0')}} </p>
+                    <p>Alle {{selected_event.end_time[0]}}:{{selected_event.end_time[1].toString().padStart(2, '0')}}</p>
+                </mat-card-content>
+            </mat-card>
         </div>
     }
 </div>
