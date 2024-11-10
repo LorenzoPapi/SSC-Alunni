@@ -4,12 +4,13 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import {MatCalendarCellClassFunction, MatDatepickerModule} from '@angular/material/datepicker'
 
 export interface Event{
-  ora_inizio : [number, number]
-  ora_fine : [number, number]
-  giorno : number
-  mese: number
-  titolo: string
-  descrizione: string
+  start_time : [number, number]
+  end_time : [number, number]
+  day : number
+  month: number
+  title: string
+  description: string
+  type : "Colloquia" | "Corso" | "Assemblea" 
 }
 
 @Component({
@@ -28,24 +29,57 @@ export class CalendarioComponent {
     console.log("somthing wrong")
   })
 
-  events = [
-    {month: 10, day:5, color:"blue"},
-    {month: 10, day:20, color:"red"},
-    {month: 10, day:11, color:"green"},
-    {month: 10, day:10, color:"green"}
+  events : Event[] = [
+    {
+      start_time: [7, 45], 
+      end_time: [9, 0],
+      day: 20,
+      month: 10,
+      title: "Colloquia 'la pedagogia di picchiare i bambini'",
+      description: 'In aula magna',
+      type: "Colloquia"
+    }
   ]
+
+  color_map = {"Colloquia" : "red", "Corso":"blue", "Assemblea":"green"}
+  next_event : Event | null = null;
+
+  ngOnInit(){
+    var day = new Date().getDate()
+    var month = new Date().getMonth()
+
+    for (var event of this.events){
+      if (day <= event.day && month <= event.month){
+        if (this.next_event == null){
+          this.next_event = event
+        }else{
+          if (event.month == this.next_event.month){
+            if (event.day <= this.next_event.day){
+              this.next_event = event
+            }
+          }else if(event.month < this.next_event.month){
+            this.next_event = event
+          }
+        }
+      }
+    }
+  }
 
   dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
     // Only highligh dates inside the month view.
-    console.log(cellDate.getDate(), cellDate.getMonth())
     if (view === 'month') {
       for (const event of this.events) {
         if (cellDate.getDate() === event.day && cellDate.getMonth() === event.month) {
-          return event.color + '-marker';
+          return this.color_map[event.type] + '-marker';
         }
       }
     }
 
     return '';
   };
+
+  openPopUp(){
+    this.selected.set(null);
+    
+  }
 }
