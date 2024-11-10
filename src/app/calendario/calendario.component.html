@@ -1,1 +1,10 @@
-<p>calendario works!</p>
+<div class="calendario-container">
+    <mat-calendar ngSkipHydration  [(selected)]="selected"></mat-calendar>
+    <p>Selected date: {{selected()}}</p>
+
+    <div class="next-event-container">
+        <div class="next-event">
+            
+        </div>
+    </div>
+</div>
