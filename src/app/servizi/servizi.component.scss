@@ -1,0 +1,22 @@
+.servizi-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+
+    button{
+        font-size: 25px;
+        color: white;
+        background-color: var(--primary);
+        border-radius: 10px;
+        height: 80px;
+        width: 300px;
+
+        p{
+            width: 200px;
+        }
+    }
+    
+}
