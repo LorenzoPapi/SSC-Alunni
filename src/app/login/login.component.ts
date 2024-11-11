@@ -20,10 +20,10 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
-  public _action: string = "login";
+  	public _action: string = "login";
 	public registerForm: FormGroup;
 	public loginForm: FormGroup;
-  public errorMSG: string = "";
+  	public errorMSG: string = "";
 
 	public title: string = "LOGIN"
 	public send: string = "Accedi"
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 		return this._action;
 	}
 
-  public set action(a) {
+  	public set action(a) {
 		switch (a) {
 			case "login":
 				this.title = "LOGIN"
@@ -70,6 +70,7 @@ export class LoginComponent implements OnInit {
 			//password: ["", Validators.compose([Validators.required, Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}")])],
 			nome: ["", Validators.required],
 			email: ["", Validators.compose([Validators.required, Validators.email])],
+
 			telefono: ["", Validators.pattern("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")],
 		});
 		this.actualForm = this.loginForm;

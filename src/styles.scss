@@ -53,6 +53,9 @@ $primary-color : pink;
   --secondary : #A1CD24;
   --tertiary : #717DFF;
   --error : red;
+
+  --topbar-height : 85px;
+  --navbar-height : 65px
 }
 
 
@@ -97,4 +100,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-calendar-body-today{
   background-color: rgb(215, 215, 215);
   border: none;
+}
+
+mat-label:has(+ .mat-focused){
+  color: var(--tertiary) !important;
 }

@@ -1,0 +1,43 @@
+:host{
+    --mdc-outlined-text-field-outline-color : rgb(217, 217, 217);
+}
+
+.profilo-container{
+    height: 100%;
+    width: 100%;
+
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.profilo-card{
+    height: 100%;
+
+    padding: 40px 30px;
+    
+    border : 1px solid var(--mdc-outlined-text-field-outline-color); 
+
+    border-radius: 20px;
+    box-sizing: border-box;
+    
+}
+
+form{
+    
+    height: 100%;
+    overflow-y: scroll;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+mat-label{
+    margin-bottom: 10px;
+}
+
+mat-form-field{
+    --mdc-outlined-text-field-focus-outline-color : var(--tertiary);
+    --mat-form-field-container-vertical-padding : 10px;
+    --mat-form-field-container-height : 40px
+}
+

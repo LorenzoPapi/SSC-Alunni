@@ -12,13 +12,13 @@
 }
 
 .app-content{
-    flex: 1 auto;
+    height: calc(100vh - var(--topbar-height) - var(--navbar-height));
 }
 
 
 mat-toolbar{
     background-color: var(--primary);
-    height: 85px;
+    height: var(--topbar-height);
     display: flex;
     justify-content: space-between;
     padding: 0px;
@@ -45,7 +45,7 @@ mat-toolbar{
 }
 
 .app-navigator{
-    height: 65px;
+    height: var(--navbar-height);
     width: 100%;
     //background-color: map-get(m3-theme.$secondary-color, 50);;
     background-color: var(--secondary);
@@ -67,7 +67,7 @@ mat-toolbar{
             width: 100%;
             mat-icon{
                 color: white;
-                font-size: 35px;
+                font-size: 30px;
                 display: flex;
                 justify-content: center;
                 align-items: center;
