@@ -1,0 +1,50 @@
+<div class="animation-container" [ngStyle]="{'right' : chosen_service == null ? '0px' : '100%'}"> 
+    <div class="servizi-container" >
+        <button mat-fab extended (click)="chosen_service='aulette'">
+            <mat-icon>school</mat-icon>
+            <p>Prenota auletta</p>
+        </button>
+    
+        <button mat-fab extended (click)="chosen_service='mensa'">
+            <mat-icon>restaurant</mat-icon>
+            <p>Cerco Libero</p>
+        </button>
+    
+        <button mat-fab extended (click)="chosen_service='lavatrice'">
+            <mat-icon>local_laundry_service</mat-icon>
+            <p>Prenota lavatrice</p>
+        </button>
+    
+    </div>
+
+    <div class="service-component">
+        @if (chosen_service != null){
+        <div class="service-header">
+            
+            <button mat-icon-button (click)="chosen_service=null">
+                <mat-icon>
+                    arrow_back
+                </mat-icon>
+            </button>
+            <p>
+                {{descriptions[chosen_service]}}
+            </p>
+        </div>
+        <div class="components-container">
+            
+                @switch(chosen_service){
+                    @case("mensa"){
+                        <app-mensa></app-mensa>
+                    }@case("aulette"){
+                        <app-aulette></app-aulette>
+                    }@case("lavatrice"){
+                        <app-lavatrice></app-lavatrice>
+                    }@default {
+                        boh
+                    }
+                }
+            </div>
+        }
+        </div>
+</div>
+

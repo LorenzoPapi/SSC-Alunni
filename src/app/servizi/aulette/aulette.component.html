@@ -1,0 +1,57 @@
+
+
+<div class="aulette-container">
+    <div class="test">
+        <mat-action-list>
+            @for (auletta of aulette; track auletta) {
+            <button class="auletta" mat-list-item [disabled]="auletta.occupata != null" (click)="selectAuletta(auletta.numero) ">
+                <h3 matListItemTitle>{{auletta.numero}}</h3>
+                @if (auletta.occupata == null){
+                    <button matListItemMeta>
+                        <mat-icon >
+                            arrow_right
+                        </mat-icon>
+                    </button>
+                }@else {
+                    
+                    <p matListItemMeta>
+                        <span>{{auletta.occupata.ora_inizio}} - {{auletta.occupata.ora_fine}}</span>
+                    </p>
+                }
+                @if (auletta.occupata != null) {       
+                    <p matListItemLine>
+                        <span> {{auletta.occupata.studente}} </span>
+                    </p>
+                }
+            </button>
+            <mat-divider></mat-divider>
+            }
+        </mat-action-list>
+    </div>
+</div>
+
+
+@if (user_auletta != null){
+    <div class="card-container">
+        
+        <mat-card>
+            <mat-card-header>
+                <h2>Sei Prenotato</h2>
+            </mat-card-header>
+            <mat-card-content>
+                Hai prenotato la {{user_auletta.numero}} fino alle {{user_auletta.ora_fine}}
+    
+            </mat-card-content>
+    
+            <mat-card-actions>
+                <button mat-button>
+                    Indietro
+                </button>
+
+                <button mat-button>
+                    Libera
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+}

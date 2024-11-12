@@ -1,0 +1,70 @@
+:host{
+    overflow: hidden;
+    display: block;
+    height: 100%;
+    width: 100vw;
+}
+
+.animation-container{
+    position: relative; 
+    width: 100vw; 
+    height: 100%; 
+
+    transition: 0.4s ease right;
+}
+
+.servizi-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+
+
+    button{
+        font-size: 25px;
+        color: white;
+        background-color: var(--primary);
+        border-radius: 10px;
+        height: 80px;
+        width: 300px;
+
+        p{
+            width: 200px;
+        }
+    }
+    
+}
+
+.service-component{
+    position: absolute; 
+    top: 0px; 
+    left: 100%; 
+    width: 100%; 
+    height: 100%;
+}
+
+.service-header{
+    width: 100%;
+    height: 40px;
+    display: flex;
+
+    p{
+        margin: 0px;
+        text-align: center;
+        align-content: center;
+        flex: 1;
+        font-weight: 500;
+    }
+}
+
+.components-container{
+    height: calc(100% - 40px);
+}
