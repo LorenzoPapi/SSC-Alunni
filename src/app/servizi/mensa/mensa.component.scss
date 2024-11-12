@@ -1,0 +1,64 @@
+.cercano-container{
+    padding: 20px; 
+    box-sizing: border-box; 
+    display: flex; 
+    flex-direction: column; 
+    height: 100%;
+
+    mat-label{
+        color: #9C9C9C;
+    }
+}
+
+.studenti-container{
+    border: solid #9C9C9C;
+    border-width: 1px 0px;
+    flex: 1;
+    overflow-y: scroll;
+    mat-list{
+        //height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        --mdc-list-list-item-one-line-container-height: 50px
+
+    }
+    
+}
+
+.buttons-container{
+    height: 80px; 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center;
+
+    button{
+        width: 150px;
+    }
+
+    --mdc-filled-button-label-text-size : 25px;
+    --mdc-filled-button-container-height : 50px;
+    --mdc-filled-button-container-shape : 10px;
+    --mdc-filled-button-container-color : var(--primary)
+}
+
+.available{
+    background-color: #f6f6f6;
+
+    mat-list-item{
+
+        p{
+            color: rgb(27, 27, 27);
+        }
+    }
+}
+
+.unavailable{
+    background-color: rgb(214, 214, 214);
+
+        p{
+            color: rgb(134, 134, 134);
+        }
+    
+}

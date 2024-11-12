@@ -1,1 +1,39 @@
-<p>mensa works!</p>
+<mat-tab-group>
+    <mat-tab label="Pranzo"> 
+        <ng-container [ngTemplateOutlet]="cercano_list" [ngTemplateOutletContext]="{$implicit : 'pranzo'}" />
+    </mat-tab>
+    <mat-tab label="Cena">
+        <ng-container [ngTemplateOutlet]="cercano_list" [ngTemplateOutletContext]="{$implicit : 'cena'}"/>
+
+    </mat-tab>
+</mat-tab-group>
+
+
+<ng-template #cercano_list let-tab>
+    <div class="cercano-container">
+
+        <mat-label> Stanno cercando </mat-label>
+    
+        <div class="studenti-container">
+            <mat-list>
+                @for(student of cercano[tab]; track student){
+                    <mat-list-item [ngClass]="$index < liberano[tab] ? 'available' : 'unavailable'">
+                        <p>{{student}} </p>
+                    </mat-list-item>
+                }
+            </mat-list>
+        </div>
+
+        <div class="buttons-container">
+            @if(false){
+                <button mat-flat-button> Libera </button>
+                <button mat-flat-button> Cerca </button>
+            }@else {
+                <button mat-flat-button style="font-size: 16px ;letter-spacing: -1px;"> Non cercare piu </button>
+                <button mat-flat-button [disabled]="true"> Prendi </button>
+            }
+        </div>
+
+    </div>
+</ng-template>
+
