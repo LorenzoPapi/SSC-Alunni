@@ -4,7 +4,9 @@
     </mat-tab>
     <mat-tab label="Lato Emero">
         <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'emero'}"/>
-
+    </mat-tab>
+    <mat-tab label="Puffo">
+        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'puffo'}"/>
     </mat-tab>
 </mat-tab-group>
 

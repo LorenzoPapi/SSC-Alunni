@@ -59,6 +59,23 @@ export class LavatriceComponent {
         ora_inizio : [6 , 45],
         ora_fine: [8 , 0]
       }
+    ],
+    "puffo": [
+      {
+        studente : "Piedi",
+        ora_inizio : [10 , 20],
+        ora_fine: [15 , 0]
+      },
+      {
+        studente : "Gatto",
+        ora_inizio : [20 , 45],
+        ora_fine: [21 , 0]
+      },
+      {
+        studente : "Sucaggio",
+        ora_inizio : [6 , 45],
+        ora_fine: [8 , 0]
+      }
     ]
   }
   
@@ -105,9 +122,7 @@ export class LavatriceComponent {
           // sono stringhe ma devono essere numeri !!!
           ora_inizio : result.ora_inizio.split(":"),
           ora_fine : result.ora_fine.split(":")
-        })
-        
-      }
+        })}
     })
     
   }
