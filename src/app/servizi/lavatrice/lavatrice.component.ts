@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
-import { MatLabel } from '@angular/material/form-field';
+import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { CommonModule } from '@angular/common';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 export interface PrenotazioneLavatrice{
   studente : string;
@@ -21,23 +25,43 @@ export class LavatriceComponent {
 
   cell_height = 50
 
-  prenotazioni : PrenotazioneLavatrice[] = [
-    {
-      studente : "Simone",
-      ora_inizio : [0 , 0],
-      ora_fine: [1 , 0]
-    },
-    {
-      studente : "Simone",
-      ora_inizio : [1 , 45],
-      ora_fine: [3 , 0]
-    },
-    {
-      studente : "Lorenzo",
-      ora_inizio : [6 , 45],
-      ora_fine: [8 , 0]
-    }
-  ]
+  prenotazioni : {[key : string] : PrenotazioneLavatrice[]} = {
+    "emero": [
+      {
+        studente : "Simone",
+        ora_inizio : [0 , 0],
+        ora_fine: [1 , 0]
+      },
+      {
+        studente : "Simone",
+        ora_inizio : [1 , 45],
+        ora_fine: [3 , 0]
+      },
+      {
+        studente : "Lorenzo",
+        ora_inizio : [6 , 45],
+        ora_fine: [8 , 0]
+      }
+    ],
+    "tv": [
+      {
+        studente : "Simone",
+        ora_inizio : [10 , 20],
+        ora_fine: [15 , 0]
+      },
+      {
+        studente : "Simone",
+        ora_inizio : [20 , 45],
+        ora_fine: [21 , 0]
+      },
+      {
+        studente : "Sucaggio",
+        ora_inizio : [6 , 45],
+        ora_fine: [8 , 0]
+      }
+    ]
+  }
+  
 
   ngOnInit(){
     console.log(this.times)
@@ -56,20 +80,55 @@ export class LavatriceComponent {
     return style
   }
 
-  prenota(event: MouseEvent){
+  lavatrice_dialog = inject(MatDialog)
+
+  prenota(lato: string, event: MouseEvent) {
     var y_offset = (event.target as HTMLElement).parentElement!.getBoundingClientRect().top
     var y_scroll = (event.target as HTMLElement).parentElement!.scrollTop
     var screen_y = event.y + y_scroll - y_offset
     var half_cell = screen_y/this.cell_height
-
     var hour = Math.floor(half_cell/2)
     var minutes = Math.floor((half_cell%2)*30)
 
-    this.prenotazioni.push({
-      studente: "Gay",
-      ora_inizio : [hour, minutes],
-      ora_fine : [hour+1, minutes]
+    const dialogRef = this.lavatrice_dialog.open(LavatriceDialog, {
+      data: {aula: lato, ora_inizio: hour + ":" + minutes, ora_fine : ''},
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.prenotazioni[lato].push({
+          studente: "Gay",
+          // sono stringhe ma devono essere numeri !!!
+          ora_inizio : result.ora_inizio.split(":"),
+          ora_fine : result.ora_fine.split(":")
+        })
+        console.log(this.prenotazioni[lato])
+      }
+      
     })
+    
   }
   
+}@Component({
+  selector: 'lavatrice-dialog',
+  templateUrl: 'lavatrice_dialog.html',
+  standalone: true,
+  imports: [
+    MatDialogModule, 
+    MatButtonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+
+
+export class LavatriceDialog {
+  readonly dialogRef = inject(MatDialogRef<LavatriceDialog>);
+  readonly data = inject<PrenotazioneLavatrice>(MAT_DIALOG_DATA);
+  readonly ora_fine = model(this.data.ora_fine);
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
 }

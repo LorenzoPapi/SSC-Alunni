@@ -157,6 +157,8 @@ export class AuletteComponent {
         //potrei rimuoverla al posto di crivere commenti inutili 
         //non penso lo faro 
         //mi annoio
+        
+        //COGLIONE suca - Lorenzo
         this.user_auletta = null;
       }
     });

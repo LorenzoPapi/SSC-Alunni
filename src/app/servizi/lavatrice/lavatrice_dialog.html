@@ -1,0 +1,23 @@
+<style>
+    mat-form-field{
+        --mdc-filled-text-field-container-color : rgb(234, 234, 234);
+    }
+</style>
+
+<h3 mat-dialog-title> Per quale periodo vuoi prenotare la lavatrice (lato ????) </h3>
+<mat-dialog-content>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Dalle</mat-label>
+    <input cdkFocusInitial matInput style="font-size: 25px; font-weight: 300;" [(ngModel)]="data.ora_inizio" type="time"/>
+    
+  </mat-form-field>
+  <br>
+  <mat-form-field style="width: 100%;">
+    <mat-label>Alle</mat-label>
+    <input cdkFocusInitial matInput style="font-size: 25px; font-weight: 300;" [(ngModel)]="data.ora_fine" type="time"/>
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annulla </button>
+  <button mat-button [mat-dialog-close]="data">Ok</button>
+</mat-dialog-actions>

@@ -1,25 +1,24 @@
 <mat-tab-group>
     <mat-tab label="Lato TV"> 
-        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'pranzo'}" />
+        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'tv'}" />
     </mat-tab>
     <mat-tab label="Lato Emero">
-        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'cena'}"/>
+        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'emero'}"/>
 
     </mat-tab>
 </mat-tab-group>
 
-<ng-template #prenotazioni_list let-var>
+<ng-template #prenotazioni_list let-aula>
     <div class="lavatrice-container">
 
         <div class="prenotazioni-container">
             @for (time of times; track $index) {
-                <div class="time-cell"  [ngStyle]="{'height' : cell_height+'px'}" (click)="prenota($event)">
+                <div class="time-cell"  [ngStyle]="{'height' : cell_height+'px'}" (click)="prenota(aula, $event)">
                     <mat-label> {{time}} </mat-label>
-    
                 </div>
             }
     
-            @for (prenotazione of prenotazioni; track prenotazione){
+            @for (prenotazione of prenotazioni[aula]; track prenotazione){
                 <div class="prenotazione" [ngStyle]="prenotazioneStyle(prenotazione)">
                     <p>
                         {{prenotazione.studente}}
