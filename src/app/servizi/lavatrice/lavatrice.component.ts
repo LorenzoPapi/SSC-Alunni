@@ -78,11 +78,6 @@ export class LavatriceComponent {
       }
     ]
   }
-  
-
-  ngOnInit(){
-    console.log(this.times)
-  }
 
   prenotazioneStyle(prenotazione : PrenotazioneLavatrice){
     const hour2px = (hour : [number, number]) =>{

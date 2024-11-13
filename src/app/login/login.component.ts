@@ -51,7 +51,6 @@ export class LoginComponent implements OnInit {
 		}
 		this.list = []
 		Object.entries(this.actualForm.value).forEach(([k]) => this.list.push(k))
-    console.log(this.list)
 		this._action = a
 	}
   constructor(

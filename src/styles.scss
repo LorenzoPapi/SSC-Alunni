@@ -113,3 +113,18 @@ mat-tab-group{
 mat-label:has(+ .mat-focused){
   color: var(--tertiary) !important;
 }
+
+/*
+.mdc-tab--active{
+  background-color: rgb(239, 239, 239) !important;
+  .mdc-tab__text-label{
+    color: var(--tertiary) !important;
+  }
+}*/
+
+.mat-mdc-tab{
+  background-color: rgb(239, 239, 239) !important;
+  &.mdc-tab--active{
+    background-color: white !important;
+  }
+}

@@ -102,7 +102,6 @@ export class CalendarioComponent {
   }
 
   closePopUp(){
-    console.log("tua mamma un po gay")
     this.selected_event = null
   }
   
