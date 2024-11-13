@@ -86,12 +86,17 @@ export class LavatriceComponent {
     var y_offset = (event.target as HTMLElement).parentElement!.getBoundingClientRect().top
     var y_scroll = (event.target as HTMLElement).parentElement!.scrollTop
     var screen_y = event.y + y_scroll - y_offset
-    var half_cell = screen_y/this.cell_height
-    var hour = Math.floor(half_cell/2)
-    var minutes = Math.floor((half_cell%2)*30)
+    var cells = screen_y/this.cell_height
+
+    var fifteen_cell = 1/2
+
+    cells = Math.round(cells/fifteen_cell)*fifteen_cell
+
+    var hour = Math.floor(cells/2).toString().padStart(2, '0') 
+    var minutes = Math.floor((cells%2)*30).toString().padStart(2, '0')
 
     const dialogRef = this.lavatrice_dialog.open(LavatriceDialog, {
-      data: {aula: lato, ora_inizio: hour + ":" + minutes, ora_fine : ''},
+      data: {aula: lato, ora_inizio: hour+ ":" + minutes, ora_fine : ''},
     });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -101,9 +106,8 @@ export class LavatriceComponent {
           ora_inizio : result.ora_inizio.split(":"),
           ora_fine : result.ora_fine.split(":")
         })
-        console.log(this.prenotazioni[lato])
+        
       }
-      
     })
     
   }
