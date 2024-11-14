@@ -21,6 +21,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './mensa.component.scss'
 })
 export class MensaComponent {
+  is_prendi_showing = false
+
   time : "pranzo" | "cena" = "pranzo" 
   cercano : {[key : string] : string[]} = {
     "pranzo" : ["Tizio", "Caio", "Pippo","Palle","Tizio", "Caio", "Pippo","Palle", "Palle","Tizio", "Caio", "Pippo","Palle"],
@@ -30,6 +32,10 @@ export class MensaComponent {
   liberano : {[key : string] : number}= {
     "pranzo" : 3,
     "cena" : 5
+  }
+
+  showPrendi(){
+    this.is_prendi_showing = true
   }
 
 }
