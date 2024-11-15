@@ -8,8 +8,7 @@ export class RouteService {
   router = inject(Router)
 
   navigate(url: string){
-    this.router.navigateByUrl('', ).then(() => {
-      // Poi naviga di nuovo all'URL originale, forzando il reload
+    this.router.navigateByUrl('').then(() => {
       this.router.navigateByUrl(url);
     });
   }

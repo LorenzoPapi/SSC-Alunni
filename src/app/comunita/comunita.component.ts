@@ -34,9 +34,4 @@ export class ComunitaComponent {
     "aulette" : "Prenota un auletta",
     "lavatrice" : "Prenota la lavatrice",
   }
-
-  choseService(service : string){
-    this.router.navigate([`/comunita/${service}`], {skipLocationChange : true});
-  }
-
 }
