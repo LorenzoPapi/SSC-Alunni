@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { ComunicazioniComponent } from './comunicazioni/comunicazioni.component';
 import { CalendarioComponent } from './calendario/calendario.component';
 import { ProfiloComponent } from './profilo/profilo.component';
@@ -14,13 +14,10 @@ export const routes: Routes = [
     {path: 'comunicazioni', component: ComunicazioniComponent},
     {path: 'calendario', component: CalendarioComponent},
     {path: 'comunita', component: ComunitaComponent},
-
-    {path: 'comunita/lavatrice', component: LavatriceComponent},
-    {path: 'comunita/mensa', component: MensaComponent},
-    {path: 'comunita/aulette', component: AuletteComponent},
     
     {path: 'ricerca', component: AllieviComponent},
     {path: 'admin', component: AdminComponent},
     {path: 'profilo', component: ProfiloComponent},
     {path: 'login', component: LoginComponent}
 ];
+

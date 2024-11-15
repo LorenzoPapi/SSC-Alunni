@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterModule} from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterOutlet, RouterModule, Router} from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar'
 
 import {MatButtonModule} from '@angular/material/button'
@@ -8,6 +8,10 @@ import {MatIconModule} from '@angular/material/icon'
 import { CommonModule } from '@angular/common';
 
 import {MatExpansionModule} from '@angular/material/expansion'; 
+import { DataService } from './services/dataservice.service';
+import { Observable } from 'rxjs';
+import { collection, collectionData, Firestore } from '@angular/fire/firestore';
+import { RouteService } from './services/route.service';
 
 @Component({
   selector: 'app-root',
@@ -18,4 +22,15 @@ import {MatExpansionModule} from '@angular/material/expansion';
 })
 export class AppComponent {
   title = 'sscapp';
+  routerService = inject(RouteService)
+  
+  constructor(private dataService: DataService){
+
+  }
+
+  ngOnInit(){
+    console.log("using service")
+    this.dataService.testDatabase()
+    
+  }
 }

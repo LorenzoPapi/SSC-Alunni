@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button' 
 import {MatIconModule} from '@angular/material/icon' 
 
@@ -7,6 +7,7 @@ import { AuletteComponent } from '../servizi/aulette/aulette.component';
 import { LavatriceComponent } from '../servizi/lavatrice/lavatrice.component';
 
 import { CommonModule } from '@angular/common';
+import { NavigationEnd, Router } from '@angular/router';
 
 
 @Component({
@@ -24,12 +25,18 @@ import { CommonModule } from '@angular/common';
   styleUrl: './comunita.component.scss'
 })
 export class ComunitaComponent {
-  chosen_service : null | "mensa" | "aulette" | "lavatrice" = null 
+  router = inject(Router)
+  chosen_service : undefined | "mensa" | "aulette" | "lavatrice" = undefined
+
 
   descriptions = {
     "mensa" : "Prendo Libero",
     "aulette" : "Prenota un auletta",
     "lavatrice" : "Prenota la lavatrice",
+  }
+
+  choseService(service : string){
+    this.router.navigate([`/comunita/${service}`], {skipLocationChange : true});
   }
 
 }

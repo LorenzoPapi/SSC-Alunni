@@ -1,16 +1,16 @@
 <div class="animation-container" [ngStyle]="{'right' : chosen_service == null ? '0px' : '100%'}"> 
     <div class="servizi-container" >
-        <button mat-fab extended (click)="chosen_service='aulette'">
+        <button mat-fab extended (click)="chosen_service='aulette' ; choseService('aulette') ">
             <mat-icon>school</mat-icon>
             <p>Prenota auletta</p>
         </button>
     
-        <button mat-fab extended (click)="chosen_service='mensa'">
+        <button mat-fab extended (click)="chosen_service='mensa' ; choseService('mensa') ">
             <mat-icon>restaurant</mat-icon>
             <p>Cerco Libero</p>
-        </button>
+    </button>
     
-        <button mat-fab extended (click)="chosen_service='lavatrice'">
+        <button mat-fab extended (click)="chosen_service='lavatrice'; choseService('lavatrice')">
             <mat-icon>local_laundry_service</mat-icon>
             <p>Prenota lavatrice</p>
         </button>
@@ -18,10 +18,10 @@
     </div>
 
     <div class="service-component">
-        @if (chosen_service != null){
+        @if (chosen_service != undefined){
         <div class="service-header">
             
-            <button mat-icon-button (click)="chosen_service=null">
+            <button mat-icon-button (click)="chosen_service=undefined">
                 <mat-icon>
                     arrow_back
                 </mat-icon>
