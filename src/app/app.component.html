@@ -2,7 +2,7 @@
   <div [ngStyle]="{'background-image': 'url(\'logo.png\')'}"> 
   </div>
   
-  @if(authService.currentUserSig() != null ){
+  @if(authService.currentUserSig() !== null ){
     <div>
       @if (router.url != '/profilo'){
         <button mat-icon-button routerLink="profilo">
@@ -22,12 +22,18 @@
   <router-outlet> </router-outlet>
 </div>
 
+@if(authService.currentUserSig() !== null ){
 <div class="app-navigator">
-  @if(authService.currentUserSig() != null ){
     <div><button mat-icon-button (click)="routerService.navigate('/comunita')"> <mat-icon inline> groups </mat-icon> </button> </div>
     <div><button mat-icon-button routerLink="comunicazioni"> <mat-icon inline> email </mat-icon> </button> </div>
     <div><button mat-icon-button routerLink="calendario"> <mat-icon inline> event </mat-icon> </button> </div>
     <div><button mat-icon-button routerLink="ricerca"> <mat-icon inline> search </mat-icon> </button> </div>
     <div><button mat-icon-button routerLink="admin"> <mat-icon inline> admin_panel_settings </mat-icon> </button> </div>
-  }
-</div>
+  </div>
+}
+
+@if (authService.currentUserSig() === undefined){
+  <div class="loading-container">
+    <mat-spinner></mat-spinner>
+  </div>
+}

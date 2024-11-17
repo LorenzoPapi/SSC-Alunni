@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatInputModule} from '@angular/material/input'
@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
 	public list: string[] = [];
 
 	authService = inject(AuthService)
+	router = inject(Router)
 
 	public get action() {
 		return this._action;
@@ -97,6 +98,9 @@ export class LoginComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+		if (this.authService.currentUserSig() != null){
+			this.router.navigate(['/calendario'])
+		}
 	}
 
 	

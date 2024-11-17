@@ -10,12 +10,22 @@ import { CommonModule } from '@angular/common';
 import {MatExpansionModule} from '@angular/material/expansion'; 
 import { RouteService } from './services/route.service';
 import { User } from '@angular/fire/auth';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import { AuthService } from './services/auth.service';
+import { lastValueFrom, map } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, MatToolbarModule, MatButtonModule, MatIconModule, MatExpansionModule, CommonModule, RouterModule],
+  imports: [RouterOutlet, 
+    MatToolbarModule, 
+    MatButtonModule, 
+    MatIconModule, 
+    MatExpansionModule, 
+    CommonModule, 
+    RouterModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
@@ -29,13 +39,18 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    console.log("using service")
-    
-    this.authService.user$.subscribe((user : User | null)=>{
-      this.authService.currentUserSig.set( (user == null) ? null : {nome:  user.email!})
-      console.log("navigatng")
-      this.router.navigate(['/calendario'])
+    this.authService.user$.subscribe((user : User | null) =>{
+      console.log("user", user)
+      if (user == null){
+        this.authService.currentUserSig.set(null)
+        this.router.navigate(['/login'])
+      }else{
+        this.authService.currentUserSig.set({nome:  user.email!})
+        console.log(this.authService.currentUserSig())
+        if (this.router.url == '/login'){
+          this.router.navigate(['/calendario'])
+        }
+      }
     })
-    
   }
 }
