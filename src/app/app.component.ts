@@ -8,10 +8,9 @@ import {MatIconModule} from '@angular/material/icon'
 import { CommonModule } from '@angular/common';
 
 import {MatExpansionModule} from '@angular/material/expansion'; 
-import { DataService } from './services/dataservice.service';
-import { Observable } from 'rxjs';
-import { collection, collectionData, Firestore } from '@angular/fire/firestore';
 import { RouteService } from './services/route.service';
+import { User } from '@angular/fire/auth';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -23,14 +22,20 @@ import { RouteService } from './services/route.service';
 export class AppComponent {
   title = 'sscapp';
   routerService = inject(RouteService)
-  
-  constructor(private dataService: DataService){
+  authService = inject(AuthService)
+  router = inject(Router)
+  constructor( ){
 
   }
 
   ngOnInit(){
     console.log("using service")
-    this.dataService.testDatabase()
+    
+    this.authService.user$.subscribe((user : User | null)=>{
+      this.authService.currentUserSig.set( (user == null) ? null : {nome:  user.email!})
+      console.log("navigatng")
+      this.router.navigate(['/calendario'])
+    })
     
   }
 }

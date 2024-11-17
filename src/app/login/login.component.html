@@ -5,11 +5,11 @@
     <div class="login-content">
         <form [formGroup]=actualForm class="login">
             @for (f of list; track $index) {
-            <mat-form-field class="login" appearance="fill">
-                <mat-label>{{f.charAt(0).toUpperCase() + f.slice(1)}}</mat-label>
-                <input matInput type={{f}} placeholder={{f}} autocomplete={{f}}>
-            </mat-form-field>
-            <br>
+                <mat-form-field class="login" appearance="fill">
+                    <mat-label>{{f.charAt(0).toUpperCase() + f.slice(1)}}</mat-label>
+                    <input matInput type={{f}} placeholder={{f}} autocomplete={{f}}  [formControlName]="f">
+                </mat-form-field>
+                <br>
             }
 
             <button mat-raised-button type="submit" (click)="submit()">{{send}}</button>
@@ -19,7 +19,7 @@
     <h6>{{s}}</h6>
     }
     @if (action == "register") {
-    <button mat-button (click)="action='login'">
+    <button mat-button (click)="action='login'" >
         Sei già registrato? Clicca per accedere!
     </button><br>
     }
@@ -30,3 +30,5 @@
     </button><br>
     }
 </div>
+<button (click)="debugLogout()"> debugLogout </button>
+{{authService.currentUserSig()?.nome}}

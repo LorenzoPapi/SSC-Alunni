@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { Inject, inject, Injectable, signal } from '@angular/core';
 import { collection, collectionData, Firestore } from '@angular/fire/firestore';
 import { from, Observable, of } from 'rxjs';
 
@@ -11,12 +11,6 @@ export class DataService {
   items$ : Observable<{abc: string}> = from([{abc: "tua mamma"}]);
   firestore : Firestore = inject(Firestore)
 
-
-  constructor(private afs : Firestore){
-    
-    
-  }
-
   testDatabase(){
     console.log("called")
     const itemCollection = collection(this.firestore, 'Test')
@@ -25,6 +19,6 @@ export class DataService {
     this.items$.subscribe(value =>{
       console.log(value)
     })
-
+    
   }
 }

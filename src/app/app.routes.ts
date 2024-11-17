@@ -9,15 +9,16 @@ import { AdminComponent } from './admin/admin.component';
 import { AuletteComponent } from './servizi/aulette/aulette.component';
 import { MensaComponent } from './servizi/mensa/mensa.component';
 import { LavatriceComponent } from './servizi/lavatrice/lavatrice.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-    {path: 'comunicazioni', component: ComunicazioniComponent},
-    {path: 'calendario', component: CalendarioComponent},
-    {path: 'comunita', component: ComunitaComponent},
+    {path: 'comunicazioni', component: ComunicazioniComponent , canActivate: [authGuard]},
+    {path: 'calendario', component: CalendarioComponent , canActivate: [authGuard]},
+    {path: 'comunita', component: ComunitaComponent , canActivate: [authGuard]},
     
-    {path: 'ricerca', component: AllieviComponent},
-    {path: 'admin', component: AdminComponent},
-    {path: 'profilo', component: ProfiloComponent},
+    {path: 'ricerca', component: AllieviComponent , canActivate: [authGuard]},
+    {path: 'admin', component: AdminComponent , canActivate: [authGuard]},
+    {path: 'profilo', component: ProfiloComponent  , canActivate: [authGuard]},
     {path: 'login', component: LoginComponent}
 ];
 

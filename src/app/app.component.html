@@ -2,9 +2,20 @@
   <div [ngStyle]="{'background-image': 'url(\'logo.png\')'}"> 
   </div>
   
-  <div>
-    <button mat-icon-button routerLink="profilo"><mat-icon inline> person </mat-icon></button>
-  </div>
+  @if(authService.currentUserSig() != null ){
+    <div>
+      @if (router.url != '/profilo'){
+        <button mat-icon-button routerLink="profilo">
+          <mat-icon inline> person </mat-icon>
+        </button>
+      }@else{
+        <button mat-icon-button (click)="authService.logout()" routerLink="login">
+          <mat-icon inline> logout </mat-icon>
+        </button>
+      }
+
+    </div>
+  }
 </mat-toolbar>
 
 <div class="app-content">
@@ -12,9 +23,11 @@
 </div>
 
 <div class="app-navigator">
-  <div><button mat-icon-button (click)="routerService.navigate('/comunita')"> <mat-icon inline> groups </mat-icon> </button> </div>
-  <div><button mat-icon-button routerLink="comunicazioni"> <mat-icon inline> email </mat-icon> </button> </div>
-  <div><button mat-icon-button routerLink="calendario"> <mat-icon inline> event </mat-icon> </button> </div>
-  <div><button mat-icon-button routerLink="ricerca"> <mat-icon inline> search </mat-icon> </button> </div>
-  <div><button mat-icon-button routerLink="admin"> <mat-icon inline> admin_panel_settings </mat-icon> </button> </div>
+  @if(authService.currentUserSig() != null ){
+    <div><button mat-icon-button (click)="routerService.navigate('/comunita')"> <mat-icon inline> groups </mat-icon> </button> </div>
+    <div><button mat-icon-button routerLink="comunicazioni"> <mat-icon inline> email </mat-icon> </button> </div>
+    <div><button mat-icon-button routerLink="calendario"> <mat-icon inline> event </mat-icon> </button> </div>
+    <div><button mat-icon-button routerLink="ricerca"> <mat-icon inline> search </mat-icon> </button> </div>
+    <div><button mat-icon-button routerLink="admin"> <mat-icon inline> admin_panel_settings </mat-icon> </button> </div>
+  }
 </div>

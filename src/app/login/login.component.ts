@@ -1,10 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import {MatFormFieldModule} from '@angular/material/form-field'; 
 import {MatInputModule} from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button';
+import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
+import { DataService } from '../services/dataservice.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +31,9 @@ export class LoginComponent implements OnInit {
 	public title: string = "LOGIN"
 	public send: string = "Accedi"
 	public actualForm: FormGroup;
-	public list: String[] = [];
+	public list: string[] = [];
+
+	authService = inject(AuthService)
 
 	public get action() {
 		return this._action;
@@ -63,6 +68,7 @@ export class LoginComponent implements OnInit {
 			username: ["", Validators.required],
 			password: ["", Validators.required],
 		});
+		/*
 		this.registerForm = this._form.group({
 			username: ["", Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")])],
 			password: ["", Validators.required],
@@ -71,6 +77,14 @@ export class LoginComponent implements OnInit {
 			email: ["", Validators.compose([Validators.required, Validators.email])],
 
 			telefono: ["", Validators.pattern("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")],
+		});
+		*/
+		this.registerForm = this._form.group({
+			username: ["", Validators.required],
+			password: ["", Validators.required],
+			//nome: ["", Validators.required],
+			//email: ["", Validators.required],
+			//telefono: ["", Validators.required],
 		});
 		this.actualForm = this.loginForm;
 		Object.entries(this.actualForm.value).forEach(([k]) => this.list.push(k))
@@ -101,7 +115,11 @@ export class LoginComponent implements OnInit {
 
 	login() {
 		if (!this.loginForm.invalid) {
-			
+			var username = this.loginForm.get('username')!.value
+			var password = this.loginForm.get('password')!.value
+			this.authService.login(username, password)
+		}else{
+			console.log("form invalid")
 		}
 	}
 
@@ -112,9 +130,17 @@ export class LoginComponent implements OnInit {
 	}
 
 	register() {
-		if (!this.registerForm.invalid) {
 
-		} else {
+		if (!this.registerForm.invalid) {
+			var username = this.registerForm.get('username')!.value
+			var password = this.registerForm.get('password')!.value
+			this.authService.register(username, password)
+		}else{
+			console.log("form invalid")
+		}
+
+		/*
+		else {
 			var error: string = "";
 			for (const field in this.registerForm.controls) {
 				const errors = this.registerForm.controls[field].errors;
@@ -126,5 +152,10 @@ export class LoginComponent implements OnInit {
 			}
 			this.setError(error);
 		}
+		*/
 	}  
+
+	debugLogout(){
+		this.authService.logout()
+	}
 }
