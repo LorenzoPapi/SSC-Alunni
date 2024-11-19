@@ -8,7 +8,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox'
 import {FormsModule} from '@angular/forms'
 
 import { DataService, StreamConnection } from '../services/dataservice.service';
-import { Auletta } from '../tools/Comunita';
 import { Comunicazione } from '../tools/Comunicazione';
 
 export interface Sondaggio{
@@ -33,13 +32,9 @@ export interface Sondaggio{
 })
 export class ComunicazioniComponent {
 
-  stream : StreamConnection<Comunicazione> 
+
   constructor(private dataService: DataService){
-    this.stream = dataService.connectToStream<Comunicazione>(this.dataService.comunicazioniRef)
-    this.stream.subscribe((value)=>{
-      this.comunicazioni = Object.values(value)
-    })
-    this.stream.set(5, {titolo: "ciao", descrizione: "sono una comunicazione"})
+
   }
   
   opened_panel = -1

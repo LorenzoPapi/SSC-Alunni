@@ -1,15 +1,14 @@
 import { computed, Inject, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
-import { collection, collectionData, Firestore, Unsubscribe } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, getDocs, onSnapshot, setDoc, Unsubscribe, updateDoc } from '@angular/fire/firestore';
 import { BehaviorSubject, from, map, Observable, Subscription } from 'rxjs';
-
 import { 
   child, get, query, ref, set, getDatabase, onChildAdded, onValue, orderByChild, startAfter, 
   DatabaseReference, Query,
   onChildChanged,
   onChildRemoved} from '@angular/fire/database';
-import { Auletta, Lavatrice } from '../tools/Comunita';
-
+import { Auletta } from '../tools/Comunita';
+import * as firebase from 'firebase/compat/app';
 
 export interface StreamConnection<T>{
   subscribe: (callback: (value: {[key: number]: T}) => void) => Subscription
@@ -28,51 +27,59 @@ export class DataService {
   url = 'https://sscapp-b5645-default-rtdb.europe-west1.firebasedatabase.app'
   db = getDatabase(this.app, this.url);
 
-  mensaRef = ref(this.db, '/mensa');
-  auletteRef = ref(this.db, '/aulette');
-  lavatriceRef = ref(this.db, '/lavatrice');
+  //mensaRef = ref(this.db, '/mensa');
+  //auletteRef = ref(this.db, '/aulette');
+  //lavatriceRef = ref(this.db, '/lavatrice');
+  //comunicazioniRef = ref(this.db, '/comunicazioni');
+  //eventiRef = ref(this.db, '/eventi');
+  //testRef = ref(this.db, '/test')
 
-  comunicazioniRef = ref(this.db, '/comunicazioni');
-  eventiRef = ref(this.db, '/eventi');
+  //mensaStream? : BehaviorSubject<string> 
+  //auletteStream? : StreamConnection<Auletta> 
+  //lavatriceStream? : StreamConnection<Lavatrice> 
 
-  testRef = ref(this.db, '/test')
+  auletteRef  = collection(this.firestore, 'Aulette')
+  lavatriceRef  = collection(this.firestore, 'Lavatrice')
+  comunicazioniRef  = collection(this.firestore, 'Comunicazioni')
+  eventiRef  = collection(this.firestore, 'Eventi')
 
-  mensaStream? : BehaviorSubject<string> 
-  auletteStream? : StreamConnection<Auletta> 
-  lavatriceStream? : StreamConnection<Lavatrice> 
-
-  constructor(){
-    //this.listenForNewMessages()
-    var obj = this.connectToStream<string>(this.testRef)
   
-    var count = 0
-    obj.subscribe((value)=>{
-      console.log(
-        Object.entries(value)
-          .sort((a,b) => parseInt(a[0]) - parseInt(b[1]))
-          .map(value => value[1])
-      )
-      count += 1
-      if (count > 15){
-        obj.unsubscribe()
-      }
-    })
+  constructor(){
 
-    //this.testSetDatabase()
-    //this.testValueDatabase()
   }
 
-  testFirestore(){
-    console.log("called")
-    const itemCollection = collection(this.firestore, 'Test')
-
-    this.items$ = collectionData<{abc: string}>(itemCollection)
-    this.items$.subscribe(value =>{
-      console.log(value)
-    })
+  getCollection<T>(collection : CollectionReference, keyname? : string){
+    return collectionData(collection, keyname === undefined ? undefined : { idField: keyname }) as Observable<T[]>
   }
 
-  testSetDatabase(){
+  addCollection<T>(data: T, collection : CollectionReference){
+    addDoc(collection, data as {[x: string]: any})
+  }
+
+  updateCollection<T>(key:string, data: T, collection : CollectionReference){
+    updateDoc(doc(collection, key), data as {[x: string]: any})
+  }
+
+  setCollection<T>(key:string, data: T, collection : CollectionReference){
+    setDoc(doc(collection, key), data as {[x: string]: any})
+  }
+
+  getDocument<T>(key:string, collection : CollectionReference){
+    return getDoc(doc(collection, key)).then( (doc)=>
+      doc.data() as T
+    ) as Promise<T>
+  }
+
+
+  test4Firestore(){
+    console.log("test 4")
+    onSnapshot(collection(this.firestore, "Test"), (coll) => {
+      console.log("Current data: ", coll.docs.map((doc)=>doc.data()));
+    });
+  }
+
+
+  testSet(){
     set(ref(this.db, 'users/uffa'), {
       username: "io",
       email: "mi",
@@ -80,8 +87,7 @@ export class DataService {
     });
   }
 
-  uff(){
-
+  testGet(){
     get(child(ref(this.db), 'coso1')).then((snapshot) => {
       if (snapshot.exists()) {
         const entryData = snapshot.val();
@@ -97,11 +103,12 @@ export class DataService {
   }
 
   testGetDatabase(){
+    /*
     onValue(this.testRef, (snapshot) => {
       console.log(snapshot.val())
     }, {
       onlyOnce: true
-    });
+    });*/
   }
 
   connectToStream<T>(ref : DatabaseReference) : StreamConnection<T>{
@@ -125,4 +132,6 @@ export class DataService {
       set: (key: number, value: T) => set(child(ref, key.toString()), value)
     };
   }
+
+
 }

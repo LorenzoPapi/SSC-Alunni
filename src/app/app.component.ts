@@ -42,15 +42,14 @@ export class AppComponent {
   }
 
   ngOnInit(){
-    //this.dataService.uff()
+    
+
     this.authService.user$.subscribe((user : User | null) =>{
-      console.log("user", user)
       if (user == null){
         this.authService.currentUserSig.set(null)
         this.router.navigate(['/login'])
       }else{
         this.authService.currentUserSig.set({nome:  user.email!})
-        console.log(this.authService.currentUserSig())
         if (this.router.url == '/login'){
           this.router.navigate(['/calendario'])
         }

@@ -12,17 +12,10 @@ import {MatCardModule } from '@angular/material/card';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef} from '@angular/material/dialog'
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { DataService } from '../../services/dataservice.service';
+import { Auletta } from '../../tools/Comunita';
+import { serverTimestamp } from '@angular/fire/firestore';
 
-
-
-export interface Auletta{
-  numero: string;
-  occupata : null | {
-    studente : string 
-    ora_inizio : string 
-    ora_fine : string
-  }
-}
 
 export interface AulettaData{
   numero : string;
@@ -47,100 +40,26 @@ export interface AulettaData{
   viewProviders: []
 })
 export class AuletteComponent {
-  aulette : Auletta[] = [
-    {
-      numero: '1-19',
-      occupata : null
-    },
-    {
-      numero: "1-20",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-21",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-22",
-      occupata :  null
-    },
-    {
-      numero: "1-23",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-20",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-21",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-22",
-      occupata :  null
-    },
-    {
-      numero: "1-23",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-20",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-21",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    },
-    {
-      numero: "1-22",
-      occupata :  null
-    },
-    {
-      numero: "1-23",
-      occupata :  {
-        studente : "Simone Cutrona", 
-        ora_inizio : "16:00",
-        ora_fine : "17:00"
-      }
-    }
-  ]
+  aulette : Auletta[] = []
+  
+
+  stanze_aultette = ['01','02','04','05','17','19','20','21','25' ]
 
   auletta_dialog = inject(MatDialog)
 
   user_auletta : null | AulettaData = null
+
+  
+  constructor(private dataService: DataService){
+    this.dataService.getCollection<Auletta>(this.dataService.auletteRef, 'auletta').subscribe((value)=>{
+      this.aulette = value.sort((a,b)=>parseInt(a.auletta)-parseInt(b.auletta))
+    })
+    console.log(this.dataService.firestore)
+  }
+
+  arrToTime(time : [number, number]){
+    return time[0] + ":" + time[1].toString().padStart(2, '0')
+  }
 
   selectAuletta(auletta : string) {
     const dialogRef = this.auletta_dialog.open(AulettaDialog, {

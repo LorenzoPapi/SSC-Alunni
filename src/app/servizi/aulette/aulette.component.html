@@ -4,9 +4,9 @@
     <div class="test">
         <mat-action-list>
             @for (auletta of aulette; track auletta) {
-            <button class="auletta" mat-list-item [disabled]="auletta.occupata != null" (click)="selectAuletta(auletta.numero) ">
-                <h3 matListItemTitle>{{auletta.numero}}</h3>
-                @if (auletta.occupata == null){
+            <button class="auletta" mat-list-item [disabled]="auletta.prenotazione != null" (click)="selectAuletta(auletta.auletta) ">
+                <h3 matListItemTitle>{{auletta.auletta}}</h3>
+                @if (auletta.prenotazione == null){
                     <button matListItemMeta>
                         <mat-icon >
                             arrow_right
@@ -15,12 +15,14 @@
                 }@else {
                     
                     <p matListItemMeta>
-                        <span>{{auletta.occupata.ora_inizio}} - {{auletta.occupata.ora_fine}}</span>
+                        <span>
+                            {{arrToTime(auletta.prenotazione.inizio)}} - {{arrToTime(auletta.prenotazione.fine)}}
+                        </span>
                     </p>
                 }
-                @if (auletta.occupata != null) {       
+                @if (auletta.prenotazione != null) {       
                     <p matListItemLine>
-                        <span> {{auletta.occupata.studente}} </span>
+                        <span> {{auletta.prenotazione.studente}} </span>
                     </p>
                 }
             </button>
