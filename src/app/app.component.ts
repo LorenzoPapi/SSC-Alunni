@@ -13,6 +13,7 @@ import { User } from '@angular/fire/auth';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner'; 
 import { AuthService } from './services/auth.service';
 import { lastValueFrom, map } from 'rxjs';
+import { DataService } from './services/dataservice.service';
 
 @Component({
   selector: 'app-root',
@@ -34,11 +35,14 @@ export class AppComponent {
   routerService = inject(RouteService)
   authService = inject(AuthService)
   router = inject(Router)
+  dataService = inject(DataService)
+
   constructor( ){
 
   }
 
   ngOnInit(){
+    //this.dataService.uff()
     this.authService.user$.subscribe((user : User | null) =>{
       console.log("user", user)
       if (user == null){

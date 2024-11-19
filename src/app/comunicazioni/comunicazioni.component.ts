@@ -7,10 +7,9 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatCheckboxModule} from '@angular/material/checkbox'
 import {FormsModule} from '@angular/forms'
 
-export interface Comunicazione{
-  title: string;
-  description: string;
-}
+import { DataService, StreamConnection } from '../services/dataservice.service';
+import { Auletta } from '../tools/Comunita';
+import { Comunicazione } from '../tools/Comunicazione';
 
 export interface Sondaggio{
   question: string;
@@ -30,10 +29,19 @@ export interface Sondaggio{
   ],
   templateUrl: './comunicazioni.component.html',
   styleUrl: './comunicazioni.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   viewProviders: [MatExpansionPanel]
 })
 export class ComunicazioniComponent {
+
+  stream : StreamConnection<Comunicazione> 
+  constructor(private dataService: DataService){
+    this.stream = dataService.connectToStream<Comunicazione>(this.dataService.comunicazioniRef)
+    this.stream.subscribe((value)=>{
+      this.comunicazioni = Object.values(value)
+    })
+    this.stream.set(5, {titolo: "ciao", descrizione: "sono una comunicazione"})
+  }
+  
   opened_panel = -1
   
   sondaggi : Sondaggio[] = [
@@ -52,11 +60,7 @@ export class ComunicazioniComponent {
     ]}
   ]
 
-  comunicazioni : Comunicazione[] = [
-    {title: "Date i vostri soldi a simone", description : "E si e giunto il mmneto di dare i soldi a me simone cutrona "},
-    {title: "questa 'e per te montano", description : "perche non fai mai un cazzo coglione"},
-    {title: "Sai cosa mi piace", description : "i piedi"}
-  ]
+  comunicazioni : Comunicazione[] = []
 
   ngInit(){
 
