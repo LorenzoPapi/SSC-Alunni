@@ -1,13 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import {MatFormFieldModule} from '@angular/material/form-field'; 
-import {MatInputModule} from '@angular/material/input'
+import { MatFormFieldModule } from '@angular/material/form-field'; 
+import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button';
-import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { DataService } from '../services/dataservice.service';
 import { AuthService } from '../services/auth.service';
+import { FirebaseError } from '@angular/fire/app';
 
 @Component({
   selector: 'app-login',
@@ -62,39 +61,22 @@ export class LoginComponent implements OnInit {
   constructor(
 		private _route: ActivatedRoute,
 		private _form: FormBuilder,
-    private _cookies: CookieService
-		//private _helper: HelperService,
 	) {
 		this.loginForm = this._form.group({
 			username: ["", Validators.required],
 			password: ["", Validators.required],
 		});
-		/*
 		this.registerForm = this._form.group({
 			username: ["", Validators.compose([Validators.required, Validators.pattern("^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){3,18}[a-zA-Z0-9]$")])],
 			password: ["", Validators.required],
 			//password: ["", Validators.compose([Validators.required, Validators.pattern("^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}")])],
-			nome: ["", Validators.required],
-			email: ["", Validators.compose([Validators.required, Validators.email])],
-
+			nome: ["", Validators.pattern("^[a-zA-Z ]+")],
+			cognome: ["", Validators.pattern("^[a-zA-Z ]+")],
 			telefono: ["", Validators.pattern("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$")],
-		});
-		*/
-		this.registerForm = this._form.group({
-			username: ["", Validators.required],
-			password: ["", Validators.required],
-			//nome: ["", Validators.required],
-			//email: ["", Validators.required],
-			//telefono: ["", Validators.required],
+			
 		});
 		this.actualForm = this.loginForm;
 		Object.entries(this.actualForm.value).forEach(([k]) => this.list.push(k))
-		// this._route.paramMap.subscribe((params) => {
-		// 	var hash = params.get("hash");
-		// 	if (!!hash && hash.length==40 ) {
-		// 		setTimeout(() => this.validate(hash), 3500);
-		// 	}
-		// });
 	}
 
 	ngOnInit(): void {
@@ -103,7 +85,6 @@ export class LoginComponent implements OnInit {
 		}
 	}
 
-	
 	submit() {
 		switch (this.action) {
 			case "login":
@@ -121,42 +102,55 @@ export class LoginComponent implements OnInit {
 		if (!this.loginForm.invalid) {
 			var username = this.loginForm.get('username')!.value
 			var password = this.loginForm.get('password')!.value
-			this.authService.login(username, password)
-		}else{
-			console.log("form invalid")
+			var loginPromise = this.authService.login(username, password)
+			loginPromise.then((response)=>{
+				//To remove
+				console.log(response.user.toJSON())
+			}).catch((err : FirebaseError) => {
+				this.setError(err.message)
+			})
+		} else {
+			var error: string = "";
+			for (const field in this.loginForm.controls) {
+				const errors = this.loginForm.controls[field].errors;
+				if (!!errors) {
+					if (errors["required"]) error += ("Il campo " + field + " è obbligatorio\n");
+					if (errors["pattern"]) error += ("Il campo " + field + " è invalido.\n");
+				}
+			}
+			this.setError(error);
 		}
 	}
 
 	setError(msg:string, timeout:number=3500) {
 		this.errorMSG = msg;
 		setTimeout(() => { this.errorMSG = ""; }, timeout);
-		
 	}
 
 	register() {
-
 		if (!this.registerForm.invalid) {
 			var username = this.registerForm.get('username')!.value
 			var password = this.registerForm.get('password')!.value
-			this.authService.register(username, password)
-		}else{
-			console.log("form invalid")
-		}
-
-		/*
-		else {
+			var nome = this.registerForm.get("nome")!.value
+			var cognome = this.registerForm.get("cognome")!.value
+			var telephone = this.registerForm.get("telefono")!.value
+			var registerPromise = this.authService.register(username, password)
+			registerPromise.then((response) => {
+				return this.authService.updateUser(response.user)
+			}).catch((err : FirebaseError) => {
+				this.setError(err.message)
+			})
+		} else {
 			var error: string = "";
 			for (const field in this.registerForm.controls) {
 				const errors = this.registerForm.controls[field].errors;
 				if (!!errors) {
-					if (errors["required"]) error += (field + " è obbligatorio\n");
-					if (errors["pattern"]) error += (field + " invalido.\n");
-					if (errors["email"]) error += ("Email invalida.\n")
+					if (errors["required"]) error += ("Il campo " + field + " è obbligatorio\n");
+					if (errors["pattern"]) error += ("Il campo " + field + " è invalido.\n");
 				}
 			}
 			this.setError(error);
 		}
-		*/
 	}  
 
 	debugLogout(){

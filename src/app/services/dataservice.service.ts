@@ -42,7 +42,7 @@ export class DataService {
   lavatriceRef  = collection(this.firestore, 'Lavatrice')
   comunicazioniRef  = collection(this.firestore, 'Comunicazioni')
   eventiRef  = collection(this.firestore, 'Eventi')
-
+  studentiRef = collection(this.firestore, "Studenti")
   
   constructor(){
 

@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateCurrentUser, User, user } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
+import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateCurrentUser, updatePhoneNumber, updateProfile, User, user } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
 import { Studente } from '../tools/Studente';
 
 @Injectable({
@@ -15,22 +15,15 @@ export class AuthService {
   constructor() { }
 
   login(username: string, password: string){
-    var promise = signInWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password).then(()=>{
-      
-    }, (err)=>{
-      console.log(err)
-    })
-    return promise
+    return signInWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password)
   }
 
   register(username: string, password: string){
-    var promise = createUserWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password)
-      .then((response)=>{
-        return updateCurrentUser(this.auth, response.user)
-      }, (err)=>{
-        console.log(err)
-    })
-    return from(promise)  
+    return createUserWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password)
+  }
+
+  updateUser(user: User) {
+    updateCurrentUser(this.auth, user)
   }
 
   logout(){
