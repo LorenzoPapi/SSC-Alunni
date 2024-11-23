@@ -1,11 +1,12 @@
 import { Component, WritableSignal } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field'; 
 import { AuthService } from '../services/auth.service';
 import { Studente } from '../tools/Studente';
 import { DataService } from '../services/dataservice.service';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-profilo',
@@ -19,12 +20,14 @@ export class ProfiloComponent {
 
   userForm : FormGroup;
   userSignal : WritableSignal<Studente | null | undefined>;
+  userId : string = ""
+  
 
   constructor(private fb: FormBuilder, public auth: AuthService, private dataService : DataService ) {
     this.userForm = this.fb.group({});
     this.userSignal = auth.currentUserSig;
-    this.dataService.getCollection<Studente>(this.dataService.studentiRef, "studenti").subscribe((value) => {
-      console.log(value)
+    this.auth.user$.subscribe((user) => {
+      if (!!user) this.userId = user?.uid
     })
   }
 
@@ -55,28 +58,32 @@ export class ProfiloComponent {
     this.edit = true
     var user = this.userSignal();
     this.userForm = this.fb.group({
-      nome: [user?.nome],
-      cognome: [user?.cognome],
+      nome: [user?.nome, Validators.maxLength(40)],
+      cognome: [user?.cognome, Validators.maxLength(40)],
       facolta : [user?.facolta],
-      stanza: [user?.stanza],
+      stanza: [user?.stanza, Validators.maxLength(10)],
       telefono : [user?.telefono],
-      descrizione : [user?.descrizione]
+      descrizione : [user?.descrizione, Validators.maxLength(2000)]
     });
   }
 
   salva() {
-    if (!this.userForm.invalid) {
-      this.userSignal.update((studente) => {
-        var updated : Studente = {};
-        updated.nome = this.userForm.get("nome")?.value
-        updated.cognome = this.userForm.get("cognome")?.value
-        updated.descrizione = this.userForm.get("descrizione")?.value
-        updated.facolta = this.userForm.get("facolta")?.value
-        updated.stanza = this.userForm.get("stanza")?.value
-        updated.telefono = this.userForm.get("telefono")?.value
-        return updated
-      })
+    if (this.userForm.valid) {
+      var updated : Studente = {};
+      updated.nome = this.userForm.get("nome")?.value
+      updated.cognome = this.userForm.get("cognome")?.value
+      updated.descrizione = this.userForm.get("descrizione")?.value
+      updated.facolta = this.userForm.get("facolta")?.value
+      updated.stanza = this.userForm.get("stanza")?.value
+      updated.telefono = this.userForm.get("telefono")?.value
+      this.dataService.setCollection<Studente>(this.userId, updated, this.dataService.studentiRef)
+      this.userSignal.set(updated)
       this.edit = false
-    }   
+    } else {
+        for (const name in this.userForm.controls) {
+          if (this.userForm.controls[name].invalid)
+            console.log(name)
+        }
+    }
   }
 }

@@ -136,7 +136,7 @@ export class LoginComponent implements OnInit {
 			var telephone = this.registerForm.get("telefono")!.value
 			var registerPromise = this.authService.register(username, password)
 			registerPromise.then((response) => {
-				return this.authService.updateUser(response.user)
+				return this.authService.updateUser(response.user, nome, cognome, telephone)
 			}).catch((err : FirebaseError) => {
 				this.setError(err.message)
 			})

@@ -53,6 +53,7 @@ export class DataService {
   }
 
   addCollection<T>(data: T, collection : CollectionReference){
+    
     addDoc(collection, data as {[x: string]: any})
   }
 

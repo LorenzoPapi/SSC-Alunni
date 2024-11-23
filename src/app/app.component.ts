@@ -14,6 +14,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { AuthService } from './services/auth.service';
 import { lastValueFrom, map } from 'rxjs';
 import { DataService } from './services/dataservice.service';
+import { Studente } from './tools/Studente';
 
 @Component({
   selector: 'app-root',
@@ -47,9 +48,10 @@ export class AppComponent {
         this.authService.currentUserSig.set(null)
         this.router.navigate(['/login'])
       }else{
-        this.authService.currentUserSig.set({
-          email:  user.email!
+        this.dataService.getDocument<Studente>(user.uid, this.dataService.studentiRef).then((value : Studente) => {
+          this.authService.currentUserSig.set(value)
         })
+        
         if (this.router.url == '/login'){
           this.router.navigate(['/calendario'])
         }

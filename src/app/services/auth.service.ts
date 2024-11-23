@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateCurrentUser, updatePhoneNumber, updateProfile, User, user } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { Studente } from '../tools/Studente';
+import { DataService } from './dataservice.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class AuthService {
 
   currentUserSig = signal<Studente | undefined | null>(undefined)
 
-  constructor() { }
+  constructor(private data: DataService) { }
 
   login(username: string, password: string){
     return signInWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password)
@@ -22,7 +23,13 @@ export class AuthService {
     return createUserWithEmailAndPassword(this.auth, `${username}@ssc.studenti.it`, password)
   }
 
-  updateUser(user: User) {
+  updateUser(user: User, nome : string, cognome : string, telefono : string) {
+    this.data.setCollection(user.uid, {
+      nome: nome,
+      cognome: cognome,
+      telefono: telefono,
+      email: user.email
+    }, this.data.studentiRef)
     updateCurrentUser(this.auth, user)
   }
 
