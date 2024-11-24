@@ -51,7 +51,7 @@
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="this.sta_prenotando = false">Annulla </button>
-                <button mat-button (click)="prenotaAuletta()">Ok</button>
+                <button mat-button [disabled]="ora_fine == ''" (click)="prenotaAuletta()">Ok</button>
             </mat-card-actions>
         </mat-card>
     </div>
