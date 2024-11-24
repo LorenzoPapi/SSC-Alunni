@@ -76,7 +76,8 @@ export class LavatriceComponent {
         ora_inizio : [6 , 45],
         ora_fine: [8 , 0]
       }
-    ]
+    ],
+    "nobile": []
   }
 
   prenotazioneStyle(prenotazione : PrenotazioneLavatrice){

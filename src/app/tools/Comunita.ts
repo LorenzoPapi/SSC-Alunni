@@ -1,11 +1,11 @@
-export interface Cerco{
+export interface Cerco {
 
 }
-export interface Libero{
+export interface Libero {
 
 }
 
-export interface Auletta{
+export interface Auletta {
     auletta: string 
     prenotazione : null | {
         studente : string 
@@ -14,9 +14,12 @@ export interface Auletta{
     }
 }
 
-export interface Lavatrice{
-    studente: string
-    lato : string 
-    inizio: [number, number]
-    fine: [number, number]
+export interface Lavatrice {
+    lato : string
+    prenotazione : null | {
+        studente: string
+        inizio: [number, number]
+        fine: [number, number]
+    }
+    
 }

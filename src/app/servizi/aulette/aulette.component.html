@@ -1,10 +1,8 @@
-
-
 <div class="aulette-container">
     <div class="test">
         <mat-action-list>
             @for (auletta of aulette; track auletta) {
-            <button class="auletta" mat-list-item [disabled]="auletta.prenotazione != null" (click)="selectAuletta(auletta.auletta) ">
+            <button class="auletta" mat-list-item [disabled]="auletta.prenotazione != null" (click)="this.selezionaAuletta(auletta.auletta)">
                 <h3 matListItemTitle>{{auletta.auletta}}</h3>
                 @if (auletta.prenotazione == null){
                     <button matListItemMeta>
@@ -12,7 +10,7 @@
                             arrow_right
                         </mat-icon>
                     </button>
-                }@else {
+                } @else {
                     
                     <p matListItemMeta>
                         <span>
@@ -20,9 +18,9 @@
                         </span>
                     </p>
                 }
-                @if (auletta.prenotazione != null) {       
+                @if (auletta.prenotazione != null) {
                     <p matListItemLine>
-                        <span> {{auletta.prenotazione.studente}} </span>
+                        <span> {{ auletta.prenotazione.studente }} </span>
                     </p>
                 }
             </button>
@@ -32,8 +30,34 @@
     </div>
 </div>
 
+@if (sta_prenotando) {
+    <div class="card-container">
+        <style>
+            mat-form-field{
+                --mdc-filled-text-field-container-color : rgb(234, 234, 234);
+            }
+        </style>
+    
+        <mat-card>
+            <mat-card-header>
+                <h1>Per quanto vuoi prenotare l'auletta? </h1>
+            </mat-card-header>
+            <mat-card-content>
+                <!--<p>Hai {{data.bonus}} bonus disponibili</p>-->
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Fino Alle</mat-label>
+                    <input cdkFocusInitial matInput style="font-size: 25px; font-weight: 300;" type="time" [(ngModel)] = "ora_fine"/>
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="this.sta_prenotando = false">Annulla </button>
+                <button mat-button (click)="prenotaAuletta()">Ok</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+}
 
-@if (user_auletta != null){
+@if (user_auletta != null && user_auletta.prenotazione != null){
     <div class="card-container">
         
         <mat-card>
@@ -41,12 +65,11 @@
                 <h2>Sei Prenotato</h2>
             </mat-card-header>
             <mat-card-content>
-                Hai prenotato la {{user_auletta.numero}} fino alle {{user_auletta.ora_fine}}
-    
+                Hai prenotato la {{user_auletta.auletta}} fino alle {{arrToTime(user_auletta.prenotazione!.fine)}}
             </mat-card-content>
     
             <mat-card-actions>
-                <button mat-button>
+                <button mat-button (click)="user_auletta = null">
                     Indietro
                 </button>
 

@@ -8,6 +8,9 @@
     <mat-tab label="Puffo">
         <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'puffo'}"/>
     </mat-tab>
+    <mat-tab label="Piano nobile">
+        <ng-container [ngTemplateOutlet]="prenotazioni_list" [ngTemplateOutletContext]="{$implicit : 'nobile'}"/>
+    </mat-tab>
 </mat-tab-group>
 
 <ng-template #prenotazioni_list let-aula>
