@@ -10,6 +10,7 @@ import { AuletteComponent } from './servizi/aulette/aulette.component';
 import { MensaComponent } from './servizi/mensa/mensa.component';
 import { LavatriceComponent } from './servizi/lavatrice/lavatrice.component';
 import { authGuard } from './guards/auth.guard';
+import { LogoutComponent } from './logout/logout.component';
 
 export const routes: Routes = [
     {path: 'comunicazioni', component: ComunicazioniComponent , canActivate: [authGuard]},
@@ -19,6 +20,7 @@ export const routes: Routes = [
     {path: 'ricerca', component: AllieviComponent , canActivate: [authGuard]},
     {path: 'admin', component: AdminComponent , canActivate: [authGuard]},
     {path: 'profilo', component: ProfiloComponent  , canActivate: [authGuard]},
-    {path: 'login', component: LoginComponent}
+    {path: 'login', component: LoginComponent},
+    {path: 'logout', component: LogoutComponent}
 ];
 

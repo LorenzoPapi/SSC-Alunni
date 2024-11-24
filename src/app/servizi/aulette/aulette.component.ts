@@ -69,12 +69,14 @@ export class AuletteComponent {
     this.auth.user$.subscribe((user) => {
       if (!!user) {
         var dateNow = new Date()
-        this.user_auletta!.prenotazione = {
+        var prenotazione = {
           studente: user.uid,
-          inizio: [dateNow.getHours(), dateNow.getMinutes()],
+          inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
           fine: this.timeToArr(this.ora_fine)
         }
-        this.dataService.setCollection<Auletta>(this.user_auletta!.auletta, this.user_auletta!, this.dataService.auletteRef)
+        this.user_auletta!.prenotazione = prenotazione
+        
+        this.dataService.setCollection<any>(this.user_auletta!.auletta, {prenotazione:prenotazione}, this.dataService.auletteRef)
       }
     })
     this.sta_prenotando = false

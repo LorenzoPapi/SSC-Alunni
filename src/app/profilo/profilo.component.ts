@@ -76,13 +76,15 @@ export class ProfiloComponent {
       updated.facolta = this.userForm.get("facolta")?.value
       updated.stanza = this.userForm.get("stanza")?.value
       updated.telefono = this.userForm.get("telefono")?.value
+
+      console.log("studente", updated)
       this.dataService.setCollection<Studente>(this.userId, updated, this.dataService.studentiRef)
       this.userSignal.set(updated)
       this.edit = false
     } else {
         for (const name in this.userForm.controls) {
           if (this.userForm.controls[name].invalid)
-            console.log(name)
+            console.log(name, "invalid")
         }
     }
   }
