@@ -11,7 +11,7 @@ import { MatCardModule } from '@angular/material/card';
 
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/dataservice.service';
-import { Auletta } from '../../tools/Comunita';
+import { Auletta, Prenotazione } from '../../tools/Comunita';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -45,7 +45,7 @@ export class AuletteComponent {
   constructor(private auth : AuthService, private dataService: DataService){
     this.dataService.getCollection<Auletta>(this.dataService.auletteRef, 'auletta').subscribe((value)=>{
       this.aulette = value.sort((a,b)=>parseInt(a.auletta)-parseInt(b.auletta))
-    })   
+    })
   }
 
   arrToTime(time : [number, number]){
@@ -69,14 +69,13 @@ export class AuletteComponent {
     this.auth.user$.subscribe((user) => {
       if (!!user) {
         var dateNow = new Date()
-        var prenotazione = {
+        this.user_auletta!.prenotazione = {
           studente: user.uid,
-          inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
-          fine: this.timeToArr(this.ora_fine)
+          ora_inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
+          ora_fine: this.timeToArr(this.ora_fine)
         }
-        this.user_auletta!.prenotazione = prenotazione
         
-        this.dataService.setCollection<any>(this.user_auletta!.auletta, {prenotazione:prenotazione}, this.dataService.auletteRef)
+        this.dataService.setCollection<{prenotazione:Prenotazione}>(this.user_auletta!.auletta, {prenotazione: this.user_auletta!.prenotazione}, this.dataService.auletteRef)
       }
     })
     this.sta_prenotando = false

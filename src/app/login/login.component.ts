@@ -109,6 +109,7 @@ export class LoginComponent implements OnInit {
 			}).catch((err : FirebaseError) => {
 				this.setError(err.message)
 			})
+			
 		} else {
 			var error: string = "";
 			for (const field in this.loginForm.controls) {
@@ -151,9 +152,5 @@ export class LoginComponent implements OnInit {
 			}
 			this.setError(error);
 		}
-	}  
-
-	debugLogout(){
-		this.authService.logout()
 	}
 }

@@ -14,7 +14,7 @@
                     
                     <p matListItemMeta>
                         <span>
-                            {{arrToTime(auletta.prenotazione.inizio)}} - {{arrToTime(auletta.prenotazione.fine)}}
+                            {{arrToTime(auletta.prenotazione.ora_inizio)}} - {{arrToTime(auletta.prenotazione.ora_fine)}}
                         </span>
                     </p>
                 }
@@ -65,7 +65,7 @@
                 <h2>Sei Prenotato</h2>
             </mat-card-header>
             <mat-card-content>
-                Hai prenotato la {{user_auletta.auletta}} fino alle {{arrToTime(user_auletta.prenotazione!.fine)}}
+                Hai prenotato la {{user_auletta.auletta}} fino alle {{arrToTime(user_auletta.prenotazione!.ora_fine)}}
             </mat-card-content>
     
             <mat-card-actions>

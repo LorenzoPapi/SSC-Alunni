@@ -6,12 +6,9 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angu
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
-
-export interface PrenotazioneLavatrice{
-  studente : string;
-  ora_inizio : [number , number]
-  ora_fine: [number , number]
-} 
+import { AuthService } from '../../services/auth.service';
+import { DataService } from '../../services/dataservice.service';
+import { Lavatrice, Prenotazione } from '../../tools/Comunita';
 
 @Component({
   selector: 'app-lavatrice',
@@ -25,62 +22,73 @@ export class LavatriceComponent {
 
   cell_height = 50
 
-  prenotazioni : {[key : string] : PrenotazioneLavatrice[]} = {
-    "emero": [
-      {
-        studente : "Simone",
-        ora_inizio : [0 , 0],
-        ora_fine: [1 , 0]
-      },
-      {
-        studente : "Simone",
-        ora_inizio : [1 , 45],
-        ora_fine: [3 , 0]
-      },
-      {
-        studente : "Lorenzo",
-        ora_inizio : [6 , 45],
-        ora_fine: [8 , 0]
+  prenotazioni : {[key : string] : Prenotazione[]} = {}
+
+  constructor(private auth: AuthService, private dataService: DataService) {
+    this.prenotazioni = {
+      "emero": [
+        {
+          studente : "Simone",
+          ora_inizio : [0 , 0],
+          ora_fine: [1 , 0]
+        },
+        {
+          studente : "Simone",
+          ora_inizio : [1 , 45],
+          ora_fine: [3 , 0]
+        },
+        {
+          studente : "Lorenzo",
+          ora_inizio : [6 , 45],
+          ora_fine: [8 , 0]
+        }
+      ],
+      "tv": [
+        {
+          studente : "Simone",
+          ora_inizio : [10 , 20],
+          ora_fine: [15 , 0]
+        },
+        {
+          studente : "Simone",
+          ora_inizio : [20 , 45],
+          ora_fine: [21 , 0]
+        },
+        {
+          studente : "Sucaggio",
+          ora_inizio : [6 , 45],
+          ora_fine: [8 , 0]
+        }
+      ],
+      "puffo": [
+        {
+          studente : "Piedi",
+          ora_inizio : [10 , 20],
+          ora_fine: [15 , 0]
+        },
+        {
+          studente : "Gatto",
+          ora_inizio : [20 , 45],
+          ora_fine: [21 , 0]
+        },
+        {
+          studente : "Sucaggio",
+          ora_inizio : [6 , 45],
+          ora_fine: [8 , 0]
+        }
+      ],
+      "nobile": []
+    }
+    this.dataService.getCollection<Lavatrice>(this.dataService.lavatriceRef, 'lato').subscribe((value)=>{
+      for (const i in value) {
+        if (!!value[i].prenotazioni) {
+          this.prenotazioni[value[i].lato] = value[i].prenotazioni
+        }
       }
-    ],
-    "tv": [
-      {
-        studente : "Simone",
-        ora_inizio : [10 , 20],
-        ora_fine: [15 , 0]
-      },
-      {
-        studente : "Simone",
-        ora_inizio : [20 , 45],
-        ora_fine: [21 , 0]
-      },
-      {
-        studente : "Sucaggio",
-        ora_inizio : [6 , 45],
-        ora_fine: [8 , 0]
-      }
-    ],
-    "puffo": [
-      {
-        studente : "Piedi",
-        ora_inizio : [10 , 20],
-        ora_fine: [15 , 0]
-      },
-      {
-        studente : "Gatto",
-        ora_inizio : [20 , 45],
-        ora_fine: [21 , 0]
-      },
-      {
-        studente : "Sucaggio",
-        ora_inizio : [6 , 45],
-        ora_fine: [8 , 0]
-      }
-    ],
-    "nobile": []
+    })
   }
 
-  prenotazioneStyle(prenotazione : PrenotazioneLavatrice){
+  prenotazioneStyle(prenotazione : Prenotazione){
     const hour2px = (hour : [number, number]) =>{
       return Math.floor((hour[0]*2 + hour[1]/30)*this.cell_height)
     }
@@ -109,18 +117,26 @@ export class LavatriceComponent {
     var minutes = Math.floor((cells%2)*30).toString().padStart(2, '0')
 
     const dialogRef = this.lavatrice_dialog.open(LavatriceDialog, {
-      data: {aula: lato, ora_inizio: hour+ ":" + minutes, ora_fine : ''},
+      data: {aula: lato, ora_inizio: hour + ":" + minutes, ora_fine : ''},
     });
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.prenotazioni[lato].push({
-          studente: "Gay",
-          // sono stringhe ma devono essere numeri !!!
-          ora_inizio : result.ora_inizio.split(":"),
-          ora_fine : result.ora_fine.split(":")
-        })}
+        this.auth.user$.subscribe((user) => {
+          if (!!user) {
+            console.log(this.prenotazioni)
+            this.prenotazioni[lato].push({
+              studente: user.uid,
+              // sono stringhe ma devono essere numeri !!!
+              ora_inizio : result.ora_inizio.split(":"),
+              ora_fine : result.ora_fine.split(":")
+            })
+            
+            this.dataService.updateCollection<any>(lato, {prenotazioni: this.prenotazioni[lato]}, this.dataService.lavatriceRef)
+          }
+        })
+      }
     })
-    
   }
   
 }@Component({
@@ -140,7 +156,7 @@ export class LavatriceComponent {
 
 export class LavatriceDialog {
   readonly dialogRef = inject(MatDialogRef<LavatriceDialog>);
-  readonly data = inject<PrenotazioneLavatrice>(MAT_DIALOG_DATA);
+  readonly data = inject<Prenotazione>(MAT_DIALOG_DATA);
   readonly ora_fine = model(this.data.ora_fine);
 
   onNoClick(): void {

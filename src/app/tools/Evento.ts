@@ -1,4 +1,4 @@
-export interface Evento{
+export interface Evento {
     titolo: string 
     descrizione? : string 
     giorno: Date 
