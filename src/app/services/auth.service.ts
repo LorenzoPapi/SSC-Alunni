@@ -1,8 +1,9 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Auth, authState, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateCurrentUser, updatePhoneNumber, updateProfile, User, user } from '@angular/fire/auth';
-import { Observable } from 'rxjs';
+import { BehaviorSubject,map, Observable } from 'rxjs';
 import { Studente } from '../tools/Studente';
 import { DataService } from './dataservice.service';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,9 @@ export class AuthService {
   user$ : Observable<User | null> = authState(this.auth)
 
   currentUserSig = signal<Studente | undefined | null>(undefined)
+  //currentUserSig = signal<Observable<Studente> | undefined | null>(undefined)
+  //currentUserSig = computed<Studente | undefined | null>(() => undefined)
+  userUID = signal<string | undefined>(undefined);
 
   constructor(private data: DataService) { }
 

@@ -1,6 +1,6 @@
 import { computed, Inject, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
-import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, getDocs, onSnapshot, setDoc, Unsubscribe, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, getDocs, onSnapshot, setDoc, Unsubscribe, updateDoc, docData } from '@angular/fire/firestore';
 import { BehaviorSubject, from, map, Observable, Subscription } from 'rxjs';
 import { 
   child, get, query, ref, set, getDatabase, onChildAdded, onValue, orderByChild, startAfter, 
@@ -8,7 +8,8 @@ import {
   onChildChanged,
   onChildRemoved} from '@angular/fire/database';
 import { Auletta } from '../tools/Comunita';
-import * as firebase from 'firebase/compat/app';
+
+import { serverTimestamp } from 'firebase/database'
 
 export interface StreamConnection<T>{
   subscribe: (callback: (value: {[key: number]: T}) => void) => Subscription
@@ -45,15 +46,16 @@ export class DataService {
   studentiRef = collection(this.firestore, "Studenti")
   
   constructor(){
-
+    setTimeout(()=>{
+      console.log("fra lo time", serverTimestamp)
+    }, 1000)
   }
 
-  getCollection<T>(collection : CollectionReference, keyname? : string){
+  getCollection<T>(collection : CollectionReference, keyname? : string) : Observable<T[]>{
     return collectionData(collection, keyname === undefined ? undefined : { idField: keyname }) as Observable<T[]>
   }
 
   addCollection<T>(data: T, collection : CollectionReference){
-    
     addDoc(collection, data as {[x: string]: any})
   }
 
@@ -71,6 +73,9 @@ export class DataService {
     ) as Promise<T>
   }
 
+  getObservableDocument<T>(key:string, collection : CollectionReference){
+    return docData(doc(collection, key)) as Observable<T>
+  }
 
   test4Firestore(){
     console.log("test 4")

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterOutlet, RouterModule, Router} from '@angular/router';
 import {MatToolbarModule} from '@angular/material/toolbar'
 
@@ -39,7 +39,6 @@ export class AppComponent {
   dataService = inject(DataService)
 
   constructor( ){
-
   }
 
   ngOnInit(){
@@ -48,9 +47,10 @@ export class AppComponent {
         this.authService.currentUserSig.set(null)
         this.router.navigate(['/login'])
       }else{
+        this.authService.userUID.set(user.uid)
         this.dataService.getDocument<Studente>(user.uid, this.dataService.studentiRef).then((value : Studente) => {
           this.authService.currentUserSig.set(value)
-        })
+        })        
         
         if (this.router.url == '/login'){
           this.router.navigate(['/calendario'])

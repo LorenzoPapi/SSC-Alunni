@@ -20,15 +20,10 @@ export class ProfiloComponent {
 
   userForm : FormGroup;
   userSignal : WritableSignal<Studente | null | undefined>;
-  userId : string = ""
-  
 
   constructor(private fb: FormBuilder, public auth: AuthService, private dataService : DataService ) {
     this.userForm = this.fb.group({});
     this.userSignal = auth.currentUserSig;
-    this.auth.user$.subscribe((user) => {
-      if (!!user) this.userId = user?.uid
-    })
   }
 
   ngOnInit() {
@@ -78,7 +73,7 @@ export class ProfiloComponent {
       updated.telefono = this.userForm.get("telefono")?.value
 
       console.log("studente", updated)
-      this.dataService.setCollection<Studente>(this.userId, updated, this.dataService.studentiRef)
+      this.dataService.setCollection<Studente>(this.auth.userUID()!, updated, this.dataService.studentiRef)
       this.userSignal.set(updated)
       this.edit = false
     } else {
