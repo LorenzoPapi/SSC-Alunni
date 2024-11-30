@@ -3,7 +3,7 @@
 
     </mat-calendar>
     
-    @if (next_event != null){
+    @if (!!next_event){
         <div class="next-event-container">
             <div class="next-event">
                 <h4>{{next_event.title}}</h4>
@@ -14,7 +14,7 @@
         </div>
     }
 
-    @if (selected_event != null){
+    @if (!!selected_event){
         <div class="popup-background" (click)="closePopUp()">
             <mat-card class="event-popup"> 
                 <mat-card-header>

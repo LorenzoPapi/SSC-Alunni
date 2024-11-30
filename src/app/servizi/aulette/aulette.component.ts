@@ -36,16 +36,29 @@ export class AuletteComponent {
   
   stanze_aultette = ['01','02','04','05','17','19','20','21','25' ]
 
-  user_auletta : null | Auletta = null
+  nomi : Map<String, String> = new Map()
 
-  sta_prenotando : boolean = false
-  
-  ora_fine = ""
+  user_auletta : Auletta | null = null
+
+  messaggio : string | null = null
+
+  ora_fine : string | null = null
 
   constructor(private auth : AuthService, private dataService: DataService){
     this.dataService.getCollection<Auletta>(this.dataService.auletteRef, 'auletta').subscribe((value)=>{
       this.aulette = value.sort((a,b)=>parseInt(a.auletta)-parseInt(b.auletta))
+      for (var aula of this.aulette) {
+        if (!!aula.prenotazione && aula.prenotazione.studente == auth.userUID()) {
+          this.user_auletta = aula
+        }
+      }
     })
+
+    this.dataService.getCollection<any>(this.dataService.studentiRef, "uid").subscribe((studenti) => {
+      for (var s of studenti) {
+        this.nomi.set(s.uid, s.nome + " " + s.cognome)
+      }
+    });
   }
 
   arrToTime(time : [number, number]){
@@ -57,27 +70,42 @@ export class AuletteComponent {
     return [parseInt(s[0]), parseInt(s[1])]
   }
 
-  selezionaAuletta(auletta : string) {
-    this.sta_prenotando = true
-    this.user_auletta = {
-      auletta: auletta,
-      prenotazione: null
+  disablitata(auletta : Auletta) {
+    return (!!this.user_auletta && this.user_auletta.auletta != auletta.auletta) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
+  }
+
+  selezionaAuletta(auletta : Auletta) {
+    if (!auletta.prenotazione) {
+      this.user_auletta = auletta
+      this.messaggio = "prenota"
+    } else {
+      this.messaggio = "prenotato"
     }
   }
 
   prenotaAuletta() {
-    this.auth.user$.subscribe((user) => {
-      if (!!user) {
-        var dateNow = new Date()
-        this.user_auletta!.prenotazione = {
-          studente: user.uid,
-          ora_inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
-          ora_fine: this.timeToArr(this.ora_fine)
-        }
-        
-        this.dataService.setCollection<{prenotazione:Prenotazione}>(this.user_auletta!.auletta, {prenotazione: this.user_auletta!.prenotazione}, this.dataService.auletteRef)
+    var dateNow = new Date()
+    this.dataService.updateCollection<{prenotazione:Prenotazione}>(this.user_auletta!.auletta, {
+      prenotazione: {
+        studente: this.auth.userUID()!,
+        ora_inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
+        ora_fine: this.timeToArr(this.ora_fine!)
       }
-    })
-    this.sta_prenotando = false
+    }, this.dataService.auletteRef)
+    this.messaggio = "prenotato"
+  }
+
+  liberaAuletta() {
+    this.dataService.updateCollection(this.user_auletta!.auletta, {
+      prenotazione: null
+    }, this.dataService.auletteRef)
+    this.user_auletta!.prenotazione = null
+    this.messaggio = "libera"
+  }
+
+  reset(full : boolean) {
+    this.messaggio = null
+    this.ora_fine = null
+    if (full) this.user_auletta = null
   }
 }

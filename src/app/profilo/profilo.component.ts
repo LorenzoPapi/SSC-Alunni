@@ -31,7 +31,7 @@ export class ProfiloComponent {
   }
 
   formatPhoneNumber(event: any){
-    if (event.target != null){
+    if (!!event.target){
       let phoneNumber: string = event.target.value;
 
       // Rimuovi tutti i caratteri non numerici

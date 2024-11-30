@@ -31,7 +31,7 @@ export class ComunitaComponent {
 
   descriptions = {
     "mensa" : "Prendo Libero",
-    "aulette" : "Prenota un auletta",
+    "aulette" : "Prenota un'auletta",
     "lavatrice" : "Prenota la lavatrice",
   }
 }

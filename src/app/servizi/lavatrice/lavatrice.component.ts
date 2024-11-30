@@ -8,7 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/dataservice.service';
-import { Lavatrice, Prenotazione } from '../../tools/Comunita';
+import { Prenotazione } from '../../tools/Comunita';
+import { collection } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-lavatrice',
@@ -24,67 +25,25 @@ export class LavatriceComponent {
 
   prenotazioni : {[key : string] : Prenotazione[]} = {}
 
+  nomi : Map<String, String> = new Map()
+
   constructor(private auth: AuthService, private dataService: DataService) {
-    this.prenotazioni = {
-      "emero": [
-        {
-          studente : "Simone",
-          ora_inizio : [0 , 0],
-          ora_fine: [1 , 0]
-        },
-        {
-          studente : "Simone",
-          ora_inizio : [1 , 45],
-          ora_fine: [3 , 0]
-        },
-        {
-          studente : "Lorenzo",
-          ora_inizio : [6 , 45],
-          ora_fine: [8 , 0]
-        }
-      ],
-      "tv": [
-        {
-          studente : "Simone",
-          ora_inizio : [10 , 20],
-          ora_fine: [15 , 0]
-        },
-        {
-          studente : "Simone",
-          ora_inizio : [20 , 45],
-          ora_fine: [21 , 0]
-        },
-        {
-          studente : "Sucaggio",
-          ora_inizio : [6 , 45],
-          ora_fine: [8 , 0]
-        }
-      ],
-      "puffo": [
-        {
-          studente : "Piedi",
-          ora_inizio : [10 , 20],
-          ora_fine: [15 , 0]
-        },
-        {
-          studente : "Gatto",
-          ora_inizio : [20 , 45],
-          ora_fine: [21 , 0]
-        },
-        {
-          studente : "Sucaggio",
-          ora_inizio : [6 , 45],
-          ora_fine: [8 , 0]
-        }
-      ],
-      "nobile": []
-    }
-    this.dataService.getCollection<Lavatrice>(this.dataService.lavatriceRef, 'lato').subscribe((value)=>{
-      for (const i in value) {
-        if (!!value[i].prenotazioni) {
-          this.prenotazioni[value[i].lato] = value[i].prenotazioni
-        }
+    this.dataService.getCollection<{lato: string}>(this.dataService.lavatriceRef, 'lato').subscribe((lista)=>{
+      console.log("DB", lista)
+      for (var lavatrice of lista) this.aggiornaLato(lavatrice.lato)
+      console.log("Prenotazioni", this.prenotazioni)
+    })
+
+    this.dataService.getCollection<any>(this.dataService.studentiRef, "uid").subscribe((values) => {
+      for (var v of values) {
+        this.nomi.set(v.uid, v.nome + " " + v.cognome)
       }
+    });
+  }
+
+  aggiornaLato(lato : string) { 
+    this.dataService.getCollection<Prenotazione>(collection(this.dataService.firestore, this.dataService.lavatriceRef.path + "/" + lato + "/prenotazioni"), "pid").subscribe((values) => {
+      this.prenotazioni[lato] = values
     })
   }
 
@@ -103,11 +62,17 @@ export class LavatriceComponent {
 
   lavatrice_dialog = inject(MatDialog)
 
+  timeToArr(input: string) : [number, number] {
+    var s = input.split(":")
+    return [parseInt(s[0]), parseInt(s[1])]
+  }
+
   prenota(lato: string, event: MouseEvent) {
     var y_offset = (event.target as HTMLElement).parentElement!.getBoundingClientRect().top
     var y_scroll = (event.target as HTMLElement).parentElement!.scrollTop
     var screen_y = event.y + y_scroll - y_offset
     var cells = screen_y/this.cell_height
+    console.log(event.y, y_scroll, y_offset)
 
     var fifteen_cell = 1/2
 
@@ -115,6 +80,7 @@ export class LavatriceComponent {
 
     var hour = Math.floor(cells/2).toString().padStart(2, '0') 
     var minutes = Math.floor((cells%2)*30).toString().padStart(2, '0')
+    
 
     const dialogRef = this.lavatrice_dialog.open(LavatriceDialog, {
       data: {aula: lato, ora_inizio: hour + ":" + minutes, ora_fine : ''},
@@ -122,24 +88,17 @@ export class LavatriceComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.auth.user$.subscribe((user) => {
-          if (!!user) {
-            console.log(this.prenotazioni)
-            this.prenotazioni[lato].push({
-              studente: user.uid,
-              // sono stringhe ma devono essere numeri !!!
-              ora_inizio : result.ora_inizio.split(":"),
-              ora_fine : result.ora_fine.split(":")
-            })
-            
-            this.dataService.updateCollection<any>(lato, {prenotazioni: this.prenotazioni[lato]}, this.dataService.lavatriceRef)
-          }
-        })
+        this.dataService.addCollection({
+          studente: this.auth.userUID()!,
+          ora_inizio : this.timeToArr(result.ora_inizio),
+          ora_fine : this.timeToArr(result.ora_fine),
+        }, collection(this.dataService.firestore, this.dataService.lavatriceRef.path + "/" + lato + "/prenotazioni"))
       }
     })
-  }
-  
-}@Component({
+  }  
+}
+
+@Component({
   selector: 'lavatrice-dialog',
   templateUrl: 'lavatrice_dialog.html',
   standalone: true,

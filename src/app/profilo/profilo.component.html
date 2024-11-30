@@ -12,7 +12,7 @@
             <mat-label><b>Telefono</b></mat-label><br>
             {{this.userSignal()?.telefono}}<br><br>
             <mat-label><b>Descrizione</b></mat-label><br>
-            {{this.userSignal()?.descrizione}}<br><br>
+            <span style="white-space: pre-line;">{{this.userSignal()?.descrizione}}</span><br><br>
             <button mat-raised-button (click)="modifica()">Modifica</button>
         } @else {
             <form [formGroup]="userForm">
