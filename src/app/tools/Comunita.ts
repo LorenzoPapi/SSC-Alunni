@@ -1,6 +1,6 @@
-export interface Prenotazione {
-    studente : string;
-    ora_inizio : [number , number]
+export interface OLDPrenotazione {
+    studente : string
+    ora_inizio : [number, number]
     ora_fine: [number , number]
 } 
 
@@ -15,7 +15,14 @@ export interface Libero {
 // mi confondo zio pera
 export interface Auletta {
     auletta: string 
-    prenotazione : null | Prenotazione
+    prenotazione : null | {
+        studente : string
+        ora_inizio : {
+            seconds: number,
+            nanoseconds: number
+        }
+        ora_fine : [number, number]
+    }
 }
 
 // export interface Lavatrice {

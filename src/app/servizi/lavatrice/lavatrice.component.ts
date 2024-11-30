@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/dataservice.service';
-import { Prenotazione } from '../../tools/Comunita';
+import { OLDPrenotazione } from '../../tools/Comunita';
 import { collection } from '@angular/fire/firestore';
 
 @Component({
@@ -23,7 +23,7 @@ export class LavatriceComponent {
 
   cell_height = 50
 
-  prenotazioni : {[key : string] : Prenotazione[]} = {}
+  prenotazioni : {[key : string] : OLDPrenotazione[]} = {}
 
   nomi : Map<String, String> = new Map()
 
@@ -42,12 +42,12 @@ export class LavatriceComponent {
   }
 
   aggiornaLato(lato : string) { 
-    this.dataService.getCollection<Prenotazione>(collection(this.dataService.firestore, this.dataService.lavatriceRef.path + "/" + lato + "/prenotazioni"), "pid").subscribe((values) => {
+    this.dataService.getCollection<OLDPrenotazione>(collection(this.dataService.firestore, this.dataService.lavatriceRef.path + "/" + lato + "/prenotazioni"), "pid").subscribe((values) => {
       this.prenotazioni[lato] = values
     })
   }
 
-  prenotazioneStyle(prenotazione : Prenotazione){
+  prenotazioneStyle(prenotazione : OLDPrenotazione){
     const hour2px = (hour : [number, number]) =>{
       return Math.floor((hour[0]*2 + hour[1]/30)*this.cell_height)
     }
@@ -115,7 +115,7 @@ export class LavatriceComponent {
 
 export class LavatriceDialog {
   readonly dialogRef = inject(MatDialogRef<LavatriceDialog>);
-  readonly data = inject<Prenotazione>(MAT_DIALOG_DATA);
+  readonly data = inject<OLDPrenotazione>(MAT_DIALOG_DATA);
   readonly ora_fine = model(this.data.ora_fine);
 
   onNoClick(): void {

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, model } from '@angular/core
 import {MatCardModule} from '@angular/material/card'
 import { provideNativeDateAdapter } from '@angular/material/core';
 import {MatCalendarCellClassFunction, MatDatepickerModule} from '@angular/material/datepicker'
+import { DataService } from '../services/dataservice.service';
 
 export interface Event{
   start_time : [number, number]
@@ -26,65 +27,56 @@ export interface Event{
 export class CalendarioComponent {
   selected = model<Date | null>(null);
 
-  events : Event[] = [
-    {
-      start_time: [7, 45], 
-      end_time: [9, 0],
-      day: 20,
-      month: 10,
-      title: "Colloquia 'la pedagogia di picchiare i bambini'",
-      description: 'In aula magna',
-      type: "Colloquia"
-    },
+  events: Event[] = []
 
-    {
-      start_time: [7, 45], 
-      end_time: [9, 0],
-      day: 10,
-      month: 10,
-      title: "Colloquia 'la pedagogia di picchiare i bambini'",
-      description: 'In aula magna',
-      type: "Assemblea"
-    },
-  ]
-
-  color_map = {"Colloquia" : "red", "Corso":"blue", "Assemblea":"green", "Festa":"purple"}
+  color_map = {
+    "Colloquia" : "red",
+    "Corso": "blue",
+    "Assemblea": "green",
+    "Festa": "purple"
+  }
+  
   next_event : Event | null = null;
+  
   selected_event : Event | null = null;
+  
+  dateClass: MatCalendarCellClassFunction<Date> = () => 'no-marker';
 
-  ngOnInit(){
-    var day = new Date().getDate()
-    var month = new Date().getMonth()
+  constructor(private dataService: DataService) {
+    dataService.getCollection<Event>(this.dataService.calendarioRef, "uid").subscribe((events) => {
+      this.events = events
 
-    for (var event of this.events){
-      if (day <= event.day && month <= event.month){
-        if (this.next_event == null){
-          this.next_event = event
-        }else{
-          if (event.month == this.next_event.month){
-            if (event.day <= this.next_event.day){
+      this.dateClass = (cellDate, view) => {
+        if (view === 'month') {
+          for (const event of this.events) {
+            if (cellDate.getDate() === event.day && cellDate.getMonth() === event.month) {
+              return this.color_map[event.type] + '-marker';
+            }
+          }
+        }
+        return 'no-marker';
+      }
+
+      var day = new Date().getDate()
+      var month = new Date().getMonth()
+
+      for (var event of this.events){
+        if (day <= event.day && month <= event.month){
+          if (this.next_event == null){
+            this.next_event = event
+          }else{
+            if (event.month == this.next_event.month){
+              if (event.day <= this.next_event.day){
+                this.next_event = event
+              }
+            }else if(event.month < this.next_event.month){
               this.next_event = event
             }
-          }else if(event.month < this.next_event.month){
-            this.next_event = event
           }
         }
       }
-    }
+    })
   }
-
-  dateClass: MatCalendarCellClassFunction<Date> = (cellDate, view) => {
-    // Only highligh dates inside the month view.
-    if (view === 'month') {
-      for (const event of this.events) {
-        if (cellDate.getDate() === event.day && cellDate.getMonth() === event.month) {
-          return this.color_map[event.type] + '-marker';
-        }
-      }
-    }
-
-    return 'no-marker';
-  };
 
   openPopUp(){
     if (this.selected() == null){
@@ -103,6 +95,5 @@ export class CalendarioComponent {
 
   closePopUp(){
     this.selected_event = null
-  }
-  
+  }  
 }

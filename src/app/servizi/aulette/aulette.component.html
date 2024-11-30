@@ -2,7 +2,7 @@
     <div class="test">
         <mat-action-list>
             @for (auletta of aulette; track auletta) {
-            <button class="auletta" mat-list-item [disabled]="disablitata(auletta)" (click)="this.selezionaAuletta(auletta)">
+            <button class="auletta" mat-list-item [disabled]="disabilitata(auletta)" (click)="this.selezionaAuletta(auletta)">
                 <h3 matListItemTitle>{{auletta.auletta}}</h3>
                 @if (!auletta.prenotazione){
                     <button matListItemMeta>
@@ -10,10 +10,10 @@
                             arrow_right
                         </mat-icon>
                     </button>
-                } @else {
+                } @else if (!!auletta.prenotazione.ora_inizio) {
                     <p matListItemMeta>
                         <span>
-                            {{arrToTime(auletta.prenotazione.ora_inizio)}} - {{arrToTime(auletta.prenotazione.ora_fine)}}
+                            {{timeFromDate(auletta.prenotazione.ora_inizio)}} - {{arrToTime(auletta.prenotazione.ora_fine)}}
                         </span>
                     </p>
                 }

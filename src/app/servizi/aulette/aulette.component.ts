@@ -11,8 +11,10 @@ import { MatCardModule } from '@angular/material/card';
 
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/dataservice.service';
-import { Auletta, Prenotazione } from '../../tools/Comunita';
+import { Auletta, OLDPrenotazione } from '../../tools/Comunita';
 import { AuthService } from '../../services/auth.service';
+import { timestamp } from 'rxjs';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-aulette',
@@ -70,8 +72,14 @@ export class AuletteComponent {
     return [parseInt(s[0]), parseInt(s[1])]
   }
 
-  disablitata(auletta : Auletta) {
+  disabilitata(auletta : Auletta) : boolean {
     return (!!this.user_auletta && this.user_auletta.auletta != auletta.auletta) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
+  }
+
+  timeFromDate(s: {seconds: number}) {
+    console.log(s)
+    var data = new Date(s.seconds*1000)
+    return data.getHours() + ":" + data.getMinutes().toString().padStart(2, '0')
   }
 
   selezionaAuletta(auletta : Auletta) {
@@ -84,11 +92,10 @@ export class AuletteComponent {
   }
 
   prenotaAuletta() {
-    var dateNow = new Date()
-    this.dataService.updateCollection<{prenotazione:Prenotazione}>(this.user_auletta!.auletta, {
+    this.dataService.updateCollection(this.user_auletta!.auletta, {
       prenotazione: {
+        ora_inizio: serverTimestamp(),
         studente: this.auth.userUID()!,
-        ora_inizio: [dateNow.getHours(), dateNow.getMinutes()] as [number, number],
         ora_fine: this.timeToArr(this.ora_fine!)
       }
     }, this.dataService.auletteRef)

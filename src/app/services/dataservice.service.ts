@@ -7,7 +7,6 @@ import {
   DatabaseReference, Query,
   onChildChanged,
   onChildRemoved} from '@angular/fire/database';
-import { Auletta } from '../tools/Comunita';
 
 import { serverTimestamp } from 'firebase/database'
 
@@ -44,12 +43,9 @@ export class DataService {
   comunicazioniRef  = collection(this.firestore, 'Comunicazioni')
   eventiRef  = collection(this.firestore, 'Eventi')
   studentiRef = collection(this.firestore, "Studenti")
+  calendarioRef = collection(this.firestore, "Calendario")
   
-  constructor(){
-    setTimeout(()=>{
-      console.log("fra lo time", serverTimestamp)
-    }, 1000)
-  }
+  constructor(){}
 
   getCollection<T>(collection : CollectionReference, keyname? : string) : Observable<T[]>{
     return collectionData(collection, keyname === undefined ? undefined : { idField: keyname }) as Observable<T[]>

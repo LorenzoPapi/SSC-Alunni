@@ -31,7 +31,7 @@
                     {{sondaggio.question}}
                 </p>
                 <ul style="display: flex; flex-direction: column;">
-                @for (answer of sondaggio.aswers; track answer) {
+                @for (answer of sondaggio.answers; track answer) {
                     <li>
                         <mat-checkbox [(ngModel)]="answer.selected">
                             {{answer.text}}
