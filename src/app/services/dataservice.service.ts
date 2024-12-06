@@ -8,24 +8,18 @@ import {
   onChildChanged,
   onChildRemoved} from '@angular/fire/database';
 
-import { remove, serverTimestamp } from 'firebase/database'
+import { remove, serverTimestamp } from '@angular/fire/database'
 import { Auletta } from '../tools/Comunita';
 import { toSignal } from '@angular/core/rxjs-interop'
-
-export interface StreamConnection<T>{
-  subscribe: (callback: (value: {[key: string]: T}) => void) => Subscription
-  unsubscribe: ()=>void
-  get: ()=>{ [key: string]: T; }
-  set: (key: string, value: T) => void
-}
+import { connectFunctionsEmulator, getFunctions } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataService {
-  items$ : Observable<{abc: string}> = from([{abc: "tua mamma"}]);
   firestore : Firestore = inject(Firestore)
   app = inject(FirebaseApp)
+  functions = getFunctions(this.app);
   url = 'https://sscapp-b5645-default-rtdb.europe-west1.firebasedatabase.app'
   db = getDatabase(this.app, this.url);
 
@@ -52,6 +46,7 @@ export class DataService {
   nomiStudenti : Map<String, String> = new Map();
   
   constructor(){
+    connectFunctionsEmulator(this.functions, "127.0.0.1", 5001)
     this.getCollection<any>(this.studentiRef, "uid").subscribe((studenti) => {
       for (var s of studenti) {
         this.nomiStudenti.set(s.uid, s.nome + " " + s.cognome)
