@@ -33,7 +33,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class AuletteComponent implements OnDestroy {
   stanze = ['01', '02', '04', '05', '17', '19', '20', '21', '25']
- 
+  
+  // TODO: cercare di cambiarlo in un signal per controllare quando la prenotazione non va a buon fine
   user_auletta : Auletta | null = null
 
   messaggio : string | null = null
@@ -41,35 +42,31 @@ export class AuletteComponent implements OnDestroy {
   ora_fine : string | null = null
 
   dataService = inject(DataService)
+
+  auth = inject(AuthService)
+
   stream = this.dataService.connectToStream<any>(this.dataService.auletteRef)
-  aulette_sig : Signal<Auletta[]> = computed(() => {
+
+  aulette : Signal<Auletta[]> = computed(() => {
     return Object.entries(this.stream.signal()!).map((e : [string, any]) => {
-      return {
+      var auletta = {
         numero: e[0],
         prenotazione: e[1]
       }
+      if (!!auletta.prenotazione && auletta.prenotazione.studente == this.auth.userUID()!) {
+        this.user_auletta = auletta
+      }
+      return auletta
     }).sort((a, b) => parseInt(a.numero) - parseInt(b.numero))
   })
   
-  constructor(private auth : AuthService){
-    //TODO: non sono sicuro sia questo il miglior modo
-    setTimeout(() => {
-      this.aulette_sig().forEach((a) => {
-        if (!!a.prenotazione && a.prenotazione.studente == this.auth.userUID()) {
-          this.user_auletta = a
-        }
-      })
-      console.log("aulette", this.aulette_sig())
-    }, 400)
-  }
-
   ngOnDestroy(): void {
     this.stream.unsubscribe()
   }
 
-  arrToTime(time : [number, number]){
-    return time[0] + ":" + time[1].toString().padStart(2, '0')
-  }
+  // arrToTime(time : [number, number]){
+  //   return time[0] + ":" + time[1].toString().padStart(2, '0')
+  // }
 
   timeToArr(input: string) : [number, number] {
     var s = input.split(":")
@@ -80,9 +77,8 @@ export class AuletteComponent implements OnDestroy {
     return (!!this.user_auletta && this.user_auletta.numero != auletta.numero) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
   }
 
-  timeFromDate(s: {seconds: number}) {
-    //console.log(s)
-    var data = new Date(s.seconds*1000)
+  timeFromDate(s: number) {
+    var data = new Date(s * 1000)
     return data.getHours() + ":" + data.getMinutes().toString().padStart(2, '0')
   }
 
@@ -96,18 +92,18 @@ export class AuletteComponent implements OnDestroy {
   }
 
   prenotaAuletta() {
+    //TODO: si, fa schifo, ma perora mi va bene
+    var data = this.timeToArr(this.ora_fine!);
+    var endDate = new Date()
+    if (endDate.getHours() >= 18 && data[0] < 6)
+      data[0] += 24
+    endDate.setHours(data[0], data[1], 0)
+
     this.stream.set(this.user_auletta!.numero, {
-      ora_inizio: [0, 0],
       studente: this.auth.userUID()!,
-      ora_fine: this.timeToArr(this.ora_fine!)
+      ora_fine: Math.floor(endDate.getTime() / 1000)
     })
 
-    // const offset = ref(this.dataService.db, ".info/serverTimeOffset")
-    // onValue(offset, (snap) => {
-    //   const offset = snap.val()
-    //   const estim = new Date().getTime() + offset
-    //   console.log(estim, offset)
-    // })
     this.messaggio = "prenotato"
   }
 

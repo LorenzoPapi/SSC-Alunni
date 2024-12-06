@@ -1,15 +1,14 @@
-import { computed, Inject, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, Signal } from '@angular/core';
 import { FirebaseApp } from '@angular/fire/app';
-import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, getDocs, onSnapshot, setDoc, Unsubscribe, updateDoc, docData } from '@angular/fire/firestore';
-import { BehaviorSubject, from, map, Observable, Subscription } from 'rxjs';
+import { addDoc, collection, collectionData, CollectionReference, doc, Firestore, getDoc, setDoc, updateDoc, docData } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { 
-  child, get, query, ref, set, getDatabase, onChildAdded, onValue, orderByChild, startAfter, 
-  DatabaseReference, Query,
+  child, ref, set, getDatabase, onChildAdded, 
+  DatabaseReference,
   onChildChanged,
   onChildRemoved} from '@angular/fire/database';
 
-import { remove, serverTimestamp } from '@angular/fire/database'
-import { Auletta } from '../tools/Comunita';
+import { remove } from '@angular/fire/database'
 import { toSignal } from '@angular/core/rxjs-interop'
 import { connectFunctionsEmulator, getFunctions } from '@angular/fire/functions';
 

@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/safect2",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",

@@ -1,25 +1,25 @@
 <div class="aulette-container">
     <div class="test">
         <mat-action-list>
-            @for (auletta of aulette_sig(); track auletta) {
-            <button class="auletta" mat-list-item [disabled]="disabilitata(auletta)" (click)="this.selezionaAuletta(auletta)">
-                <h3 matListItemTitle>{{auletta.numero}}</h3>
-                @if (!auletta.prenotazione){
+            @for (a of aulette(); track a) {
+            <button class="auletta" mat-list-item [disabled]="disabilitata(a)" (click)="this.selezionaAuletta(a)">
+                <h3 matListItemTitle>{{a.numero}}</h3>
+                @if (!a.prenotazione){
                     <button matListItemMeta>
                         <mat-icon >
                             arrow_right
                         </mat-icon>
                     </button>
-                } @else if (!!auletta.prenotazione.ora_inizio) {
+                } @else if (!!a.prenotazione.ora_inizio) {
                     <p matListItemMeta>
                         <span>
-                            {{timeFromDate(auletta.prenotazione.ora_inizio)}} - {{arrToTime(auletta.prenotazione.ora_fine)}}
+                            {{timeFromDate(a.prenotazione.ora_inizio)}} - {{timeFromDate(a.prenotazione.ora_fine)}}
                         </span>
                     </p>
                 }
-                @if (auletta.prenotazione != null) {
+                @if (a.prenotazione != null) {
                     <p matListItemLine>
-                        <span> {{ this.dataService.nomiStudenti.get(auletta.prenotazione.studente) }} </span>
+                        <span> {{ this.dataService.nomiStudenti.get(a.prenotazione.studente) }} </span>
                     </p>
                 }
             </button>
@@ -62,7 +62,7 @@
                     <h2>Sei Prenotato</h2>
                 </mat-card-header>
                 <mat-card-content>
-                    Hai prenotato la {{user_auletta.numero}} fino alle {{arrToTime(user_auletta.prenotazione!.ora_fine)}}.
+                    Hai prenotato la {{user_auletta.numero}} fino alle {{timeFromDate(user_auletta.prenotazione!.ora_fine)}}.
                 </mat-card-content>
         
                 <mat-card-actions>
