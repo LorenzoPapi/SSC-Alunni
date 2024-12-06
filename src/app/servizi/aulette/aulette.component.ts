@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, OnDestroy, Signal } from '@angular/core';
 
 import { MatListModule} from '@angular/material/list'
 import { MatIconModule } from '@angular/material/icon';
@@ -11,10 +11,8 @@ import { MatCardModule } from '@angular/material/card';
 
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/dataservice.service';
-import { Auletta, OLDPrenotazione } from '../../tools/Comunita';
+import { Auletta } from '../../tools/Comunita';
 import { AuthService } from '../../services/auth.service';
-import { timestamp } from 'rxjs';
-import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-aulette',
@@ -33,34 +31,40 @@ import { serverTimestamp } from '@angular/fire/firestore';
   styleUrl: './aulette.component.scss',
   viewProviders: []
 })
-export class AuletteComponent {
-  aulette : Auletta[] = []
-  
-  stanze_aultette = ['01','02','04','05','17','19','20','21','25' ]
-
-  nomi : Map<String, String> = new Map()
-
+export class AuletteComponent implements OnDestroy {
+  stanze = ['01', '02', '04', '05', '17', '19', '20', '21', '25']
+ 
   user_auletta : Auletta | null = null
 
   messaggio : string | null = null
 
   ora_fine : string | null = null
 
-  constructor(private auth : AuthService, private dataService: DataService){
-    this.dataService.getCollection<Auletta>(this.dataService.auletteRef, 'auletta').subscribe((value)=>{
-      this.aulette = value.sort((a,b)=>parseInt(a.auletta)-parseInt(b.auletta))
-      for (var aula of this.aulette) {
-        if (!!aula.prenotazione && aula.prenotazione.studente == auth.userUID()) {
-          this.user_auletta = aula
+  dataService = inject(DataService)
+  stream = this.dataService.connectToStream<any>(this.dataService.auletteRef)
+  aulette_sig : Signal<Auletta[]> = computed(() => {
+    return Object.entries(this.stream.signal()!).map((e : [string, any]) => {
+      return {
+        numero: e[0],
+        prenotazione: e[1]
+      }
+    }).sort((a, b) => parseInt(a.numero) - parseInt(b.numero))
+  })
+  
+  constructor(private auth : AuthService){
+    //TODO: non sono sicuro sia questo il miglior modo
+    setTimeout(() => {
+      this.aulette_sig().forEach((a) => {
+        if (!!a.prenotazione && a.prenotazione.studente == this.auth.userUID()) {
+          this.user_auletta = a
         }
-      }
-    })
+      })
+      console.log("aulette", this.aulette_sig())
+    }, 400)
+  }
 
-    this.dataService.getCollection<any>(this.dataService.studentiRef, "uid").subscribe((studenti) => {
-      for (var s of studenti) {
-        this.nomi.set(s.uid, s.nome + " " + s.cognome)
-      }
-    });
+  ngOnDestroy(): void {
+    this.stream.unsubscribe()
   }
 
   arrToTime(time : [number, number]){
@@ -73,11 +77,11 @@ export class AuletteComponent {
   }
 
   disabilitata(auletta : Auletta) : boolean {
-    return (!!this.user_auletta && this.user_auletta.auletta != auletta.auletta) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
+    return (!!this.user_auletta && this.user_auletta.numero != auletta.numero) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
   }
 
   timeFromDate(s: {seconds: number}) {
-    console.log(s)
+    //console.log(s)
     var data = new Date(s.seconds*1000)
     return data.getHours() + ":" + data.getMinutes().toString().padStart(2, '0')
   }
@@ -92,20 +96,23 @@ export class AuletteComponent {
   }
 
   prenotaAuletta() {
-    this.dataService.updateCollection(this.user_auletta!.auletta, {
-      prenotazione: {
-        ora_inizio: serverTimestamp(),
-        studente: this.auth.userUID()!,
-        ora_fine: this.timeToArr(this.ora_fine!)
-      }
-    }, this.dataService.auletteRef)
+    this.stream.set(this.user_auletta!.numero, {
+      ora_inizio: [0, 0],
+      studente: this.auth.userUID()!,
+      ora_fine: this.timeToArr(this.ora_fine!)
+    })
+
+    // const offset = ref(this.dataService.db, ".info/serverTimeOffset")
+    // onValue(offset, (snap) => {
+    //   const offset = snap.val()
+    //   const estim = new Date().getTime() + offset
+    //   console.log(estim, offset)
+    // })
     this.messaggio = "prenotato"
   }
 
   liberaAuletta() {
-    this.dataService.updateCollection(this.user_auletta!.auletta, {
-      prenotazione: null
-    }, this.dataService.auletteRef)
+    this.stream.set(this.user_auletta!.numero, "")
     this.user_auletta!.prenotazione = null
     this.messaggio = "libera"
   }

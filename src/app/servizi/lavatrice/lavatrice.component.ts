@@ -25,20 +25,12 @@ export class LavatriceComponent {
 
   prenotazioni : {[key : string] : OLDPrenotazione[]} = {}
 
-  nomi : Map<String, String> = new Map()
-
-  constructor(private auth: AuthService, private dataService: DataService) {
+  constructor(private auth: AuthService, public dataService: DataService) {
     this.dataService.getCollection<{lato: string}>(this.dataService.lavatriceRef, 'lato').subscribe((lista)=>{
       console.log("DB", lista)
       for (var lavatrice of lista) this.aggiornaLato(lavatrice.lato)
       console.log("Prenotazioni", this.prenotazioni)
     })
-
-    this.dataService.getCollection<any>(this.dataService.studentiRef, "uid").subscribe((values) => {
-      for (var v of values) {
-        this.nomi.set(v.uid, v.nome + " " + v.cognome)
-      }
-    });
   }
 
   aggiornaLato(lato : string) { 

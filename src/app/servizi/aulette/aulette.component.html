@@ -1,9 +1,9 @@
 <div class="aulette-container">
     <div class="test">
         <mat-action-list>
-            @for (auletta of aulette; track auletta) {
+            @for (auletta of aulette_sig(); track auletta) {
             <button class="auletta" mat-list-item [disabled]="disabilitata(auletta)" (click)="this.selezionaAuletta(auletta)">
-                <h3 matListItemTitle>{{auletta.auletta}}</h3>
+                <h3 matListItemTitle>{{auletta.numero}}</h3>
                 @if (!auletta.prenotazione){
                     <button matListItemMeta>
                         <mat-icon >
@@ -19,7 +19,7 @@
                 }
                 @if (auletta.prenotazione != null) {
                     <p matListItemLine>
-                        <span> {{ this.nomi.get(auletta.prenotazione.studente) }} </span>
+                        <span> {{ this.dataService.nomiStudenti.get(auletta.prenotazione.studente) }} </span>
                     </p>
                 }
             </button>
@@ -62,7 +62,7 @@
                     <h2>Sei Prenotato</h2>
                 </mat-card-header>
                 <mat-card-content>
-                    Hai prenotato la {{user_auletta.auletta}} fino alle {{arrToTime(user_auletta.prenotazione!.ora_fine)}}.
+                    Hai prenotato la {{user_auletta.numero}} fino alle {{arrToTime(user_auletta.prenotazione!.ora_fine)}}.
                 </mat-card-content>
         
                 <mat-card-actions>
@@ -84,7 +84,7 @@
                     <h2>Liberazione!</h2>
                 </mat-card-header>
                 <mat-card-content>
-                    Hai liberato la {{user_auletta.auletta}}!
+                    Hai liberato la {{user_auletta.numero}}!
                 </mat-card-content>
         
                 <mat-card-actions>

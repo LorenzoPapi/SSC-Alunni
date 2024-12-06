@@ -26,7 +26,7 @@
             @for (prenotazione of prenotazioni[aula]; track prenotazione){
                 <div class="prenotazione" [ngStyle]="prenotazioneStyle(prenotazione)">
                     <p>
-                        {{this.nomi.get(prenotazione.studente)}}
+                        {{this.dataService.nomiStudenti.get(prenotazione.studente)}}
                     </p>
                 </div>
             }

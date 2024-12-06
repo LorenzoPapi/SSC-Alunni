@@ -14,13 +14,13 @@ export interface Libero {
 // TODO cambiare il campo "auletta" in "numero"
 // mi confondo zio pera
 export interface Auletta {
-    auletta: string 
+    numero: string 
     prenotazione : null | {
         studente : string
-        ora_inizio : {
+        ora_inizio : any/*{
             seconds: number,
             nanoseconds: number
-        }
+        }*/
         ora_fine : [number, number]
     }
 }
