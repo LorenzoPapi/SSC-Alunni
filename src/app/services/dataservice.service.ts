@@ -45,7 +45,6 @@ export class DataService {
   nomiStudenti : Map<String, String> = new Map();
   
   constructor(){
-    connectFunctionsEmulator(this.functions, "127.0.0.1", 5001)
     this.getCollection<any>(this.studentiRef, "uid").subscribe((studenti) => {
       for (var s of studenti) {
         this.nomiStudenti.set(s.uid, s.nome + " " + s.cognome)

@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/dataservice.service';
 import { Auletta } from '../../tools/Comunita';
 import { AuthService } from '../../services/auth.service';
+import { httpsCallable } from '@angular/fire/functions';
 
 @Component({
   selector: 'app-aulette',
@@ -99,12 +100,17 @@ export class AuletteComponent implements OnDestroy {
       data[0] += 24
     endDate.setHours(data[0], data[1], 0)
 
-    this.stream.set(this.user_auletta!.numero, {
-      studente: this.auth.userUID()!,
-      ora_fine: Math.floor(endDate.getTime() / 1000)
+    const prenota = httpsCallable(this.dataService.functions, "prenotaAuletta");
+    prenota({ ora_fine: Math.floor(endDate.getTime() / 1000) }).then((result: any) => {
+      this.stream.set(this.user_auletta!.numero, {
+        studente: this.auth.userUID()!,
+        ora_fine: Math.floor(endDate.getTime() / 1000),
+        ora_inizio: result.data.c
+      })
+      this.messaggio = "prenotato"
+    }, (_) => {
+      this.messaggio = "errore"
     })
-
-    this.messaggio = "prenotato"
   }
 
   liberaAuletta() {
