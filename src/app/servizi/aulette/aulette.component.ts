@@ -54,9 +54,13 @@ export class AuletteComponent implements OnDestroy {
         numero: e[0],
         prenotazione: e[1]
       }
+
       if (!!auletta.prenotazione && auletta.prenotazione.studente == this.auth.userUID()!) {
         this.user_auletta = auletta
+      } else if (!!this.user_auletta && this.user_auletta.numero == auletta.numero) {
+        this.user_auletta = null
       }
+      
       return auletta
     }).sort((a, b) => parseInt(a.numero) - parseInt(b.numero))
   })
@@ -64,10 +68,6 @@ export class AuletteComponent implements OnDestroy {
   ngOnDestroy(): void {
     this.stream.unsubscribe()
   }
-
-  // arrToTime(time : [number, number]){
-  //   return time[0] + ":" + time[1].toString().padStart(2, '0')
-  // }
 
   timeToArr(input: string) : [number, number] {
     var s = input.split(":")
@@ -94,17 +94,20 @@ export class AuletteComponent implements OnDestroy {
 
   prenotaAuletta() {
     //TODO: si, fa schifo, ma perora mi va bene
-    var data = this.timeToArr(this.ora_fine!);
+    var dataOraFine = this.timeToArr(this.ora_fine!);
     var endDate = new Date()
-    if (endDate.getHours() >= 18 && data[0] < 6)
-      data[0] += 24
-    endDate.setHours(data[0], data[1], 0)
+    if (endDate.getHours() >= 18 && dataOraFine[0] < 6)
+      dataOraFine[0] += 24
+    endDate.setHours(dataOraFine[0], dataOraFine[1], 0)
 
     const prenota = httpsCallable(this.dataService.functions, "prenotaAuletta");
-    prenota({ ora_fine: Math.floor(endDate.getTime() / 1000) }).then((result: any) => {
+    var prenotazione = {
+      ora_fine: Math.floor(endDate.getTime() / 1000),
+      studente: this.auth.userUID()!
+    }
+    prenota(prenotazione).then((result: any) => {
       this.stream.set(this.user_auletta!.numero, {
-        studente: this.auth.userUID()!,
-        ora_fine: Math.floor(endDate.getTime() / 1000),
+        ...prenotazione,
         ora_inizio: result.data.c
       })
       this.messaggio = "prenotato"

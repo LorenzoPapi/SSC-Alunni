@@ -1,41 +1,41 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-//import {onRequest} from "firebase-functions/v2/https";
-//import { getDatabase } from "firebase-admin/database"
 import { onCall } from "firebase-functions/https"
 import * as functions from "firebase-functions/v2"
-//import * as logger from "firebase-functions/logger";
+import * as logger from "firebase-functions/logger";
 
-export const update = functions.database.onValueCreated({
-  ref: "aulette/{numero}/ora_fine",
-  region: "europe-west1"
-}, (event) => {
-  // var currentTime = Math.floor(new Date(event.time).getTime() / 1000)
-  // var duration = event.data.val() - currentTime
-  
-  // if (duration < 0 || duration > 6*3600) {
-  //   event.data.ref.parent!.set("")
-  //   throw new functions.https.HttpsError("invalid-argument", "L'orario è invalido!")
-    
-  // } else {
-  //   return event.data.ref.parent!.child("ora_inizio").set(currentTime)
-  // }
+const timeouts = {};
+
+export const onModificaAuletta = functions.database.onValueUpdated({
+    ref: "aulette/{numero}",
+    region: "europe-west1"
+  }, (e) => {
+    logger.info(e.data)
+    if (e.data.before.val() == "") {
+      logger.info(timeouts)
+      var data = e.data.after.val()
+      var msDelay = (data.ora_fine - data.ora_inizio) * 1000
+      timeouts[data.studente] = setTimeout(() => {
+        logger.info("Tempo scaduto!")
+        e.data.after.ref.set("");
+      }, msDelay)
+      logger.info("Timeout impostato");
+    } else if (e.data.after.val() == "") {
+      logger.info("Auletta liberata dall'utente.")
+      clearTimeout(timeouts[e.data.before.val().studente])
+      delete timeouts[e.data.before.val().studente]
+      logger.info("Cancellato timeout.")
+    }
 })
 
 export const prenotaAuletta = onCall({cors: true}, (req) => {
   var currentTime = Math.floor(new Date().getTime() / 1000)
   var duration = req.data.ora_fine - currentTime
+  logger.info("Tentativo di prenotazione auletta.")
   
   if (duration < 0 || duration > 6*3600) {
+    logger.info("Tentativo fallito.")
     throw new functions.https.HttpsError("invalid-argument", "L'orario è invalido!")
   } else {
+    logger.info("Tentativo riuscito.")
     return {
       c: currentTime
     }
