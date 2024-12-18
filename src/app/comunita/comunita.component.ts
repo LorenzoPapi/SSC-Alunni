@@ -2,12 +2,13 @@ import { Component, inject } from '@angular/core';
 import {MatButtonModule} from '@angular/material/button' 
 import {MatIconModule} from '@angular/material/icon' 
 
-import { MensaComponent } from '../servizi/mensa/mensa.component';
+import { ClpComponent } from '../servizi/clp/clp.component';
 import { AuletteComponent } from '../servizi/aulette/aulette.component';
 import { LavatriceComponent } from '../servizi/lavatrice/lavatrice.component';
 
 import { CommonModule } from '@angular/common';
-import { NavigationEnd, Router } from '@angular/router';
+import { Router } from '@angular/router';
+import { MensaComponent } from "../servizi/mensa/mensa.component";
 
 
 @Component({
@@ -16,21 +17,23 @@ import { NavigationEnd, Router } from '@angular/router';
   imports: [
     MatButtonModule,
     MatIconModule,
-    MensaComponent,
+    ClpComponent,
     AuletteComponent,
     LavatriceComponent,
-    CommonModule
-  ],
+    CommonModule,
+    MensaComponent
+],
   templateUrl: './comunita.component.html',
   styleUrl: './comunita.component.scss'
 })
 export class ComunitaComponent {
   router = inject(Router)
-  chosen_service : undefined | "mensa" | "aulette" | "lavatrice" = undefined
+  chosen_service : undefined | "clp" | "aulette" | "lavatrice" | "mensa" = undefined
 
 
   descriptions = {
-    "mensa" : "Prendo Libero",
+    "mensa": "Prenota mensa",
+    "clp" : "Prendo Libero",
     "aulette" : "Prenota un'auletta",
     "lavatrice" : "Prenota la lavatrice",
   }

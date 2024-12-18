@@ -24,14 +24,11 @@ export class DataService {
 
   //auletteStream? : StreamConnection<Auletta> = this.connectToStream(ref(this.db, "/aulette"))
 
-  //mensaRef = ref(this.db, '/mensa');
   auletteRef = ref(this.db, '/aulette');
   //lavatriceRef = ref(this.db, '/lavatrice');
   //comunicazioniRef = ref(this.db, '/comunicazioni');
   //eventiRef = ref(this.db, '/eventi');
   //testRef = ref(this.db, '/test')
-
-  //mensaStream? : BehaviorSubject<string> 
   
   //lavatriceStream? : StreamConnection<Lavatrice> 
 

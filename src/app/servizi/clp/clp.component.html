@@ -1,0 +1,62 @@
+<mat-tab-group>
+    <mat-tab label="Pranzo"> 
+        <ng-container [ngTemplateOutlet]="cercano_list" [ngTemplateOutletContext]="{$implicit : 'pranzo'}" />
+    </mat-tab>
+    <mat-tab label="Cena">
+        <ng-container [ngTemplateOutlet]="cercano_list" [ngTemplateOutletContext]="{$implicit : 'cena'}"/>
+
+    </mat-tab>
+</mat-tab-group>
+
+
+<ng-template #cercano_list let-tab>
+    <div class="cercano-container">
+
+        <mat-label> Stanno cercando </mat-label>
+    
+        <div class="studenti-container">
+            <mat-list>
+                @for(student of cercano[tab]; track student){
+                    <mat-list-item [ngClass]="$index < liberano[tab] ? 'available' : 'unavailable'">
+                        <p>{{student}}</p>
+                    </mat-list-item>
+                }
+            </mat-list>
+        </div>
+
+        <div class="buttons-container">
+            @if(false){
+                <button mat-flat-button> Libera </button>
+                <button mat-flat-button> Cerca </button>
+            }@else {
+                <button mat-flat-button style="font-size: 16px ;letter-spacing: -1px;"> Non cercare piu </button>
+                <button mat-flat-button [disabled]="false" (click)="showPrendi()"> Prendi </button>
+            }
+        </div>
+
+    </div>
+</ng-template>
+
+
+@if(is_prendi_showing){
+
+    <div class="prendi-container" >
+        <div class="cercano-container">
+    
+            <mat-label> A chi rubi il pasto? </mat-label>
+        
+            <div class="studenti-container">
+                <mat-action-list>
+                    @for(student of cercano["pranzo"]; track student){
+                        <button mat-list-item  [disabled]="$index < liberano['pranzo'] ? false : true">
+                            <p matListItemTitle>{{student}}</p>
+                            <p matListItemLine> ACF </p>
+                        </button>
+                    }
+                </mat-action-list>
+            </div>
+        </div>
+    
+    </div>
+}
+

@@ -13,7 +13,7 @@
                 } @else if (!!a.prenotazione.ora_inizio) {
                     <p matListItemMeta>
                         <span>
-                            {{timeFromDate(a.prenotazione.ora_inizio)}} - {{timeFromDate(a.prenotazione.ora_fine)}}
+                            {{timestampToHM(a.prenotazione.ora_inizio)}} - {{timestampToHM(a.prenotazione.ora_fine)}}
                         </span>
                     </p>
                 }
@@ -28,6 +28,26 @@
         </mat-action-list>
     </div>
 </div>
+
+@if (messaggio == "libera"){
+    <div class="card-container">
+        
+        <mat-card>
+            <mat-card-header>
+                <h2>Liberazione!</h2>
+            </mat-card-header>
+            <mat-card-content>
+                Hai liberato l'auletta!
+            </mat-card-content>
+    
+            <mat-card-actions>
+                <button mat-button (click)="reset(true)">
+                    Ok
+                </button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+}
 
 @if (!!user_auletta){
     @if (messaggio == "prenota") {
@@ -62,7 +82,7 @@
                     <h2>Sei Prenotato</h2>
                 </mat-card-header>
                 <mat-card-content>
-                    Hai prenotato la {{user_auletta.numero}} fino alle {{timeFromDate(user_auletta.prenotazione!.ora_fine)}}.
+                    Hai prenotato la {{user_auletta.numero}} fino alle {{timestampToHM(user_auletta.prenotazione!.ora_fine)}}.
                 </mat-card-content>
         
                 <mat-card-actions>
@@ -72,24 +92,6 @@
     
                     <button mat-button (click)="liberaAuletta()">
                         Libera
-                    </button>
-                </mat-card-actions>
-            </mat-card>
-        </div>
-    } @else if (messaggio == "libera"){
-        <div class="card-container">
-            
-            <mat-card>
-                <mat-card-header>
-                    <h2>Liberazione!</h2>
-                </mat-card-header>
-                <mat-card-content>
-                    Hai liberato la {{user_auletta.numero}}!
-                </mat-card-content>
-        
-                <mat-card-actions>
-                    <button mat-button (click)="reset(true)">
-                        Ok
                     </button>
                 </mat-card-actions>
             </mat-card>
@@ -113,4 +115,3 @@
         </div>
     }
 }
-

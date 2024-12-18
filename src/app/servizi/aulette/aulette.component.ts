@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnDestroy, Signal } from '@angular/core';
 
-import { MatListModule} from '@angular/material/list'
+import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
@@ -69,17 +69,12 @@ export class AuletteComponent implements OnDestroy {
     this.stream.unsubscribe()
   }
 
-  timeToArr(input: string) : [number, number] {
-    var s = input.split(":")
-    return [parseInt(s[0]), parseInt(s[1])]
-  }
-
   disabilitata(auletta : Auletta) : boolean {
     return (!!this.user_auletta && this.user_auletta.numero != auletta.numero) || (!!auletta.prenotazione && auletta.prenotazione.studente != this.auth.userUID()) 
   }
 
-  timeFromDate(s: number) {
-    var data = new Date(s * 1000)
+  timestampToHM(ts: number) {
+    var data = new Date(ts * 1000)
     return data.getHours() + ":" + data.getMinutes().toString().padStart(2, '0')
   }
 
@@ -93,18 +88,21 @@ export class AuletteComponent implements OnDestroy {
   }
 
   prenotaAuletta() {
+    this.messaggio = null;
     //TODO: si, fa schifo, ma perora mi va bene
-    var dataOraFine = this.timeToArr(this.ora_fine!);
-    var endDate = new Date()
-    if (endDate.getHours() >= 18 && dataOraFine[0] < 6)
-      dataOraFine[0] += 24
-    endDate.setHours(dataOraFine[0], dataOraFine[1], 0)
+    var fineArr = [parseInt(this.ora_fine!.split(":")[0]), parseInt(this.ora_fine!.split(":")[1])]
+    var fineData = new Date()
+    if (fineData.getHours() >= 18 && fineArr[0] < 6)
+      fineArr[0] += 24
+    fineData.setHours(fineArr[0], fineArr[1], 0)
+    console.log(fineData)
 
-    const prenota = httpsCallable(this.dataService.functions, "prenotaAuletta");
     var prenotazione = {
-      ora_fine: Math.floor(endDate.getTime() / 1000),
+      ora_fine: Math.floor(fineData.getTime() / 1000),
       studente: this.auth.userUID()!
     }
+    
+    const prenota = httpsCallable(this.dataService.functions, "prenotaAuletta");
     prenota(prenotazione).then((result: any) => {
       this.stream.set(this.user_auletta!.numero, {
         ...prenotazione,
@@ -118,7 +116,6 @@ export class AuletteComponent implements OnDestroy {
 
   liberaAuletta() {
     this.stream.set(this.user_auletta!.numero, "")
-    this.user_auletta!.prenotazione = null
     this.messaggio = "libera"
   }
 

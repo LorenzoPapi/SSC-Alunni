@@ -7,12 +7,17 @@
     
         <button mat-fab extended (click)="chosen_service='mensa'  ">
             <mat-icon>restaurant</mat-icon>
-            <p>Cerco Libero</p>
-    </button>
+            <p>Prenota mensa</p>
+        </button>
     
         <button mat-fab extended (click)="chosen_service='lavatrice'">
             <mat-icon>local_laundry_service</mat-icon>
             <p>Prenota lavatrice</p>
+        </button>
+
+        <button mat-fab extended (click)="chosen_service='clp'  ">
+            <mat-icon>restaurant</mat-icon>
+            <p>Cerco Libero</p>
         </button>
     
     </div>
@@ -33,8 +38,10 @@
         <div class="components-container">
             
                 @switch(chosen_service){
-                    @case("mensa"){
-                        <app-mensa></app-mensa>
+                    @case ("mensa") {
+                        <app-mensa></app-mensa>   
+                    }@case("clp"){
+                        <app-clp></app-clp>
                     }@case("aulette"){
                         <app-aulette></app-aulette>
                     }@case("lavatrice"){

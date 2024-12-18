@@ -7,7 +7,7 @@ import { AllieviComponent } from './allievi/allievi.component';
 import { ComunitaComponent } from './comunita/comunita.component';
 import { AdminComponent } from './admin/admin.component';
 import { AuletteComponent } from './servizi/aulette/aulette.component';
-import { MensaComponent } from './servizi/mensa/mensa.component';
+import { ClpComponent } from './servizi/clp/clp.component';
 import { LavatriceComponent } from './servizi/lavatrice/lavatrice.component';
 import { authGuard } from './guards/auth.guard';
 import { LogoutComponent } from './logout/logout.component';

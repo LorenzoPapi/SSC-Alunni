@@ -1,41 +1,30 @@
-import { Component } from '@angular/core';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { CommonModule } from '@angular/common';
-import { MatLabel } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-mensa',
   standalone: true,
-  imports: [
-    MatTabsModule,
-    MatDividerModule,
-    MatListModule,
-    CommonModule,
-    MatLabel,
-    MatButtonModule
-  ],
+  imports: [],
   templateUrl: './mensa.component.html',
   styleUrl: './mensa.component.scss'
 })
-export class MensaComponent {
-  is_prendi_showing = false
+export class MensaComponent implements OnInit {
+  URL : string = "http://www.roccoscoded.altervista.org/SSC"
+  API_URL : string = URL + "/API"
 
-  time : "pranzo" | "cena" = "pranzo" 
-  cercano : {[key : string] : string[]} = {
-    "pranzo" : ["Tizio", "Caio", "Pippo","Palle","Tizio", "Caio", "Pippo","Palle", "Palle","Tizio", "Caio", "Pippo","Palle"],
-    "cena" : ["Mucca", "Gatto"]
+  sessID : string = ""
+
+  http = inject(HttpClient)
+
+  login() {
+    
   }
 
-  liberano : {[key : string] : number}= {
-    "pranzo" : 3,
-    "cena" : 5
+  getPrenotazioni() {
+    
   }
 
-  showPrendi(){
-    this.is_prendi_showing = true
+  ngOnInit(): void {
+    this.login()
   }
-
 }

@@ -13,6 +13,7 @@ import { getFunctions, provideFunctions } from '@angular/fire/functions';
 import { getMessaging, provideMessaging } from '@angular/fire/messaging';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { environment } from '../environments/environment.development';
+import { provideHttpClient, withFetch, withJsonpSupport } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes, ), provideClientHydration(), provideAnimationsAsync(), provideServiceWorker('ngsw-worker.js', {
@@ -28,6 +29,7 @@ export const appConfig: ApplicationConfig = {
           provideFunctions(() => getFunctions()), 
           provideMessaging(() => getMessaging()), 
           provideStorage(() => getStorage()),
+          provideHttpClient(withFetch(), withJsonpSupport())
         ]
 };
 
